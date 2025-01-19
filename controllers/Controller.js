@@ -50,6 +50,118 @@ exports.ajouter = (request, response)=>{
     response.status(200).render('layout/ajouter', {actif})
 }
 
+exports.voir = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : true,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'historique' : false,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/voir', {actif})
+}
+
+exports.utilisateurs = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : true,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'historique' : false,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/utilisateurs', {actif})
+}
+
+exports.stats = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : true,
+        'messages' : false,
+        'carte' : false,
+        'historique' : false,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/stats', {actif})
+}
+
+exports.messages = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : true,
+        'carte' : false,
+        'historique' : false,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/messages', {actif})
+}
+
+exports.carte = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : true,
+        'historique' : false,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/carte', {actif})
+}
+
+exports.historique = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'historique' : true,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/historique', {actif})
+}
+
+exports.parametre = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'historique' : false,
+        'parametre' : true,
+    }
+    response.status(200).render('layout/parametre', {actif})
+}
+
 exports.logout = ('/logout', (request, response) => {
     // Détruire la session
     request.session.destroy((error) => {

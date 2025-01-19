@@ -1,0 +1,112 @@
+<%-include("./composants/header") %>
+
+    <section style="padding: 16px;">
+        <h2><i class="fa fa-users fa-fw"></i> Gestion des utilisateurs</h2>
+
+        <!-- Trigger/Open The Modal -->
+        <button id="myBtn">Ajouter un utilisateur</button>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form action="/action_page.php">
+                    <h2>Register Form</h2>
+                    <div class="input-container">
+                        <i class="fa fa-font icon"></i>
+                        <input class="input-field" type="text" placeholder="Nom complet" name="nomComplet">
+                    </div>
+
+                    <div class="input-container">
+                        <i class="fa fa-user icon"></i>
+                        <input class="input-field" type="text" placeholder="Username" name="username">
+                    </div>
+
+                    <div class="input-container">
+                        <i class="fa fa-key icon"></i>
+                        <input class="input-field" type="password" placeholder="Password" name="password">
+                    </div>
+
+                    <div class="input-container">
+                        <i class="fa fa-tasks icon"></i>
+                        <select name="role" id="" class="input-field">
+                            <option value="" disabled selected>Rôle</option>
+                            <option value="">Administrateur</option>
+                            <option value="">stagière</option>
+                        </select>
+                    </div>
+
+                    <div class="input-container">
+                        <i class="fa fa-image icon"></i>
+                        <input class="input-field" type="file" placeholder="photo" name="photo">
+                    </div>
+
+                    <button type="submit" class="btnModal">Register</button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+    <section style="padding: 16px;">
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+
+        <table id="myTable" class="w3-table w3-striped w3-white">
+            <tr class="header">
+                <th>Name</th>
+                <th>Country</th>
+                <th>Nombre</th>
+            </tr>
+            <tr>
+                <td>Alfreds Futterkiste</td>
+                <td>Germany</td>
+                <td>236</td>
+            </tr>
+            <tr>
+                <td>Berglunds snabbkop</td>
+                <td>Sweden</td>
+                <td>36</td>
+            </tr>
+            <tr>
+                <td>Island Trading</td>
+                <td>UK</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>Koniglich Essen</td>
+                <td>Germany</td>
+                <td>6</td>
+            </tr>
+        </table>
+    </section>
+    <script>
+        function myFunction() {
+  // Déclare les variables
+  var input, filter, table, tr, td, i, j, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Parcourt toutes les lignes du tableau (sauf l'en-tête)
+  for (i = 1; i < tr.length; i++) {
+    tr[i].style.display = "none"; // Masque la ligne par défaut
+    td = tr[i].getElementsByTagName("td");
+    // Parcourt toutes les colonnes de la ligne
+    for (j = 0; j < td.length; j++) {
+      if (td[j]) {
+        txtValue = td[j].textContent || td[j].innerText;
+        // Si une colonne correspond au filtre, affiche la ligne
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+          break; // Arrête la vérification pour cette ligne
+        }
+      }
+    }
+  }
+}
+
+        </script>
+
+<%-include("./composants/footer") %>
