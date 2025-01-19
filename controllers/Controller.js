@@ -1,15 +1,53 @@
 
 exports.index = (request, response)=>{
-    const titre = 'TODOLIST'
-    response.status(200).render('layout/index', {titre})
+    const actif = {
+        'accueil' : true,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'history' : false,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/index', {actif})
 }
 
-exports.about = (request, response)=>{
-    if (!request.session.userId) {
-        return response.redirect('/pageConnexion'); // Si l'utilisateur n'est pas connecté, le rediriger
+exports.liste = (request, response)=>{
+    // if (!request.session.userId) {
+    //     return response.redirect('/pageConnexion'); // Si l'utilisateur n'est pas connecté, le rediriger
+    // }
+    const actif = {
+        'accueil' : false,
+        'liste' : true,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'historique' : false,
+        'parametre' : false,
     }
-    const titre = 'A propos'
-    response.status(200).render('layout/apropos', {titre})
+    response.status(200).render('layout/liste', {actif})
+}
+
+exports.ajouter = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : true,
+        'voir' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'historique' : false,
+        'parametre' : false,
+    }
+    response.status(200).render('layout/ajouter', {actif})
 }
 
 exports.logout = ('/logout', (request, response) => {

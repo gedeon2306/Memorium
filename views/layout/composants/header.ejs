@@ -1,15 +1,32 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
+
 <head>
+    <title>Memorium</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TODOLIST</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/bootstrap-icons.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="assets/images/logo/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/googleApis.css">
+    <link rel="stylesheet" href="assets/css/stylesW3.css">
+    <link rel="stylesheet" href="assets/css/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/liste.css">
 </head>
-<body>
+
+<body class="w3-light-grey">
+
+    <!-- Top container -->
+    <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+        <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey"
+            onclick="w3_open();"><i class="fa fa-bars"></i> Menu</button>
+        <span class="w3-bar-item w3-right"><img src="assets/images/logo/logo.png" style="width:26px"></span>
+    </div>
 
     <%-include('navbar') %>
 
-    <main>
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer"
+        title="close side menu" id="myOverlay"></div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:300px;margin-top:43px;">

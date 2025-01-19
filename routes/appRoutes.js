@@ -4,7 +4,9 @@ const tacheController = require('../controllers/Controller')
 
 router.get('/',tacheController.index)
 
-router.get('/apropos',tacheController.about)
+router.get('/liste',tacheController.liste)
+
+router.get('/ajouter',tacheController.ajouter)
 
 router.get('/logout',tacheController.logout)
 
