@@ -1,5 +1,61 @@
 <%-include("./composants/header") %>
 
-    
+    <section style="padding: 20px;">
+        <h2><b><i class="fa fa-user-friends fa-fw"></i> Gestion des familles</b></h2>
+
+        <!-- Trigger/Open The Modal -->
+        <button id="myBtn" class="btn btn-bleu">Ajouter une famille <i class="fa fa-circle-plus fa-lg"></i></button>
+
+        <!-- The Modal -->
+        <%-include('./composants/modalAddFamille') %>
+        
+    </section>
+    <section style="padding: 16px;">
+        <div class="input-container">
+            <i class="fa fa-search icon"></i>
+            <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Effectuez une recherche...">
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table id="myTable" class="w3-table w3-striped w3-white"">
+                <tr class="header">
+                    <th>N°</th>
+                    <th>Famille</th>
+                    <th>Nom Garrant</th>
+                    <th>Prenom Garrant</th>
+                    <th>Profession</th>
+                    <th>Telephone</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>MAKAMBO</td>
+                    <td>Alfreds Futterkiste</td>
+                    <td>Alfro</td>
+                    <td>Professeur</td>
+                    <td>069755236</td>
+                    <td>Alfro56789@gmail.com</td>
+                    <td>
+                        <button class="btn btn-vert"><i class="fa fa-edit fa-fw"></i></button>
+                        <button class="btn btn-rouge"><i class="far fa-trash-alt fa-fw"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>AKOUALA</td>
+                    <td>Berglunds snabbkop</td>
+                    <td>Sweden</td>
+                    <td>Mécanicien</td>
+                    <td>056739336</td>
+                    <td>SwedensnabbkopBerglunds56@gmail.com</td>
+                    <td>
+                        <button class="btn btn-vert"><i class="fa fa-edit fa-fw"></i></button>
+                        <button class="btn btn-rouge"><i class="far fa-trash-alt fa-fw"></i></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </section>
         
 <%-include("./composants/footer") %>

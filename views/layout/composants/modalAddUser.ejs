@@ -1,0 +1,40 @@
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form action="/action_page.php">
+            <h2>Formuliare d'ajout d'un utilisateur</h2>
+            <div class="photo-upload-container">
+                <label for="photo-upload" class="photo-upload-label" id="photo-upload-label">
+                    <span id="upload-text">📷 Cliquez pour ajouter</span>
+                    <input type="file" id="photo-upload" accept="image/*" class="photo-upload-input" />
+                </label>
+            </div>
+            <br />
+            <div class="input-container">
+                <i class="fa fa-font icon"></i>
+                <input class="input-field" type="text" placeholder="Nom complet" name="nomComplet" />
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-user icon"></i>
+                <input class="input-field" type="text" placeholder="Username" name="username" />
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-key icon"></i>
+                <input class="input-field" type="password" placeholder="Password" name="password" />
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-tasks icon"></i>
+                <select name="role" id="" class="input-field">
+                    <option value="" disabled selected>Rôle</option>
+                    <option value="">Administrateur</option>
+                    <option value="">stagière</option>
+                </select>
+            </div>
+            <button type="submit" class="btnModal">Register</button>
+        </form>
+    </div>
+</div>
