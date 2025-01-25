@@ -27,5 +27,6 @@
 
 .cartTrou:hover {
     background-color: rgb(75, 75, 224);
+    transform: translateY(-10px);
     cursor: pointer;
 }
