@@ -81,3 +81,42 @@
   .btnModal:hover {
     opacity: 1;
   }
+
+  .photo-upload-container {
+    text-align: center;
+    margin: 20px;
+  }
+
+  /* Label stylisé */
+  .photo-upload-label {
+    display: inline-block;
+    cursor: pointer;
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #ccc;
+    border-radius: 100px;
+    background-color: #f9f9f9;
+    background-size: cover; /* Permet d'afficher l'image */
+    background-position: center;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    line-height: 200px;
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+
+  .photo-upload-label:hover {
+    border-color: #888;
+    background-color: #f0f0f0;
+  }
+
+  /* Icône et texte par défaut */
+  .photo-upload-label span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Masque l'input natif */
+  .photo-upload-input {
+    display: none;
+  }

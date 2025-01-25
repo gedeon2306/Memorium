@@ -1,10 +1,10 @@
 <%-include("./composants/header") %>
 
-    <section style="padding: 16px;">
-        <h2><i class="fa fa-users fa-fw"></i> Gestion des utilisateurs</h2>
+    <section style="padding: 20px;">
+        <h2><b><i class="fa fa-users fa-fw"></i> Gestion des utilisateurs</b></h2>
 
         <!-- Trigger/Open The Modal -->
-        <button id="myBtn">Ajouter un utilisateur</button>
+        <button id="myBtn" class="btn btn-bleu">Ajouter un utilisateur <i class="fa fa-add"></i></button>
 
         <!-- The Modal -->
         <div id="myModal" class="modal">
@@ -13,7 +13,13 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <form action="/action_page.php">
-                    <h2>Register Form</h2>
+                    <h2>Formuliare d'ajout d'un utilisateur</h2>
+                    <div class="photo-upload-container">
+                        <label for="photo-upload" class="photo-upload-label" id="photo-upload-label">
+                          <span id="upload-text">📷 Cliquez pour ajouter une photo</span>
+                          <input type="file" id="photo-upload" accept="image/*" class="photo-upload-input" />
+                        </label>
+                      </div>
                     <div class="input-container">
                         <i class="fa fa-font icon"></i>
                         <input class="input-field" type="text" placeholder="Nom complet" name="nomComplet">
@@ -36,11 +42,6 @@
                             <option value="">Administrateur</option>
                             <option value="">stagière</option>
                         </select>
-                    </div>
-
-                    <div class="input-container">
-                        <i class="fa fa-image icon"></i>
-                        <input class="input-field" type="file" placeholder="photo" name="photo">
                     </div>
 
                     <button type="submit" class="btnModal">Register</button>
@@ -80,33 +81,5 @@
             </tr>
         </table>
     </section>
-    <script>
-        function myFunction() {
-  // Déclare les variables
-  var input, filter, table, tr, td, i, j, txtValue;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
-
-  // Parcourt toutes les lignes du tableau (sauf l'en-tête)
-  for (i = 1; i < tr.length; i++) {
-    tr[i].style.display = "none"; // Masque la ligne par défaut
-    td = tr[i].getElementsByTagName("td");
-    // Parcourt toutes les colonnes de la ligne
-    for (j = 0; j < td.length; j++) {
-      if (td[j]) {
-        txtValue = td[j].textContent || td[j].innerText;
-        // Si une colonne correspond au filtre, affiche la ligne
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-          break; // Arrête la vérification pour cette ligne
-        }
-      }
-    }
-  }
-}
-
-        </script>
 
 <%-include("./composants/footer") %>
