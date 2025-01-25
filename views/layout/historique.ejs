@@ -1,5 +1,43 @@
 <%-include("./composants/header") %>
 
-    
+    <section style="padding: 16px;">
+        <div class="input-container">
+            <i class="fa fa-search icon"></i>
+            <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Effectuez une recherche...">
+        </div>
+
+        <table id="myTable" class="w3-table w3-striped w3-white">
+            <tr class="header">
+                <th>N°</th>
+                <th>Action effectuée</th>
+                <th>Date heure</th>
+                <th>Utilisateur</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Connexion</td>
+                <td>01-25-2025 10:00</td>
+                <td>Administrateur</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Déconnexion</td>
+                <td>01-25-2025 12:00</td>
+                <td>Administrateur</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Connexion</td>
+                <td>01-25-2025 13:00</td>
+                <td>Mark</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Ajouter Defunt</td>
+                <td>01-25-2025 13:35</td>
+                <td>Mark</td>
+            </tr>
+        </table>
+    </section>
         
 <%-include("./composants/footer") %>

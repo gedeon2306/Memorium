@@ -1,0 +1,31 @@
+.sectionTrou {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    flex-wrap: wrap;
+}
+
+.cartTrou {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    padding-top: 13px;
+    text-align: center;
+    padding: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.cartTrou a{
+    text-decoration: none;
+}
+
+.cartTrou:hover {
+    background-color: rgb(75, 75, 224);
+    cursor: pointer;
+}

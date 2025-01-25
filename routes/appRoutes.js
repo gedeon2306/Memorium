@@ -20,7 +20,7 @@ router.get('/carte',tacheController.carte)
 
 router.get('/historique',tacheController.historique)
 
-router.get('/parametre',tacheController.parametre)
+router.get('/famille',tacheController.famille)
 
 router.get('/logout',tacheController.logout)
 

@@ -10,7 +10,7 @@ exports.index = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'history' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/index', {actif})
 }
@@ -29,7 +29,7 @@ exports.liste = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'historique' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/liste', {actif})
 }
@@ -45,7 +45,7 @@ exports.ajouter = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'historique' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/ajouter', {actif})
 }
@@ -61,7 +61,7 @@ exports.voir = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'historique' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/voir', {actif})
 }
@@ -77,7 +77,7 @@ exports.utilisateurs = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'historique' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/utilisateurs', {actif})
 }
@@ -93,7 +93,7 @@ exports.stats = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'historique' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/stats', {actif})
 }
@@ -109,7 +109,7 @@ exports.messages = (request, response)=>{
         'messages' : true,
         'carte' : false,
         'historique' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/messages', {actif})
 }
@@ -125,7 +125,7 @@ exports.carte = (request, response)=>{
         'messages' : false,
         'carte' : true,
         'historique' : false,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/carte', {actif})
 }
@@ -141,12 +141,12 @@ exports.historique = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'historique' : true,
-        'parametre' : false,
+        'famille' : false,
     }
     response.status(200).render('layout/historique', {actif})
 }
 
-exports.parametre = (request, response)=>{
+exports.famille = (request, response)=>{
     const actif = {
         'accueil' : false,
         'liste' : false,
@@ -157,9 +157,9 @@ exports.parametre = (request, response)=>{
         'messages' : false,
         'carte' : false,
         'historique' : false,
-        'parametre' : true,
+        'famille' : true,
     }
-    response.status(200).render('layout/parametre', {actif})
+    response.status(200).render('layout/famille', {actif})
 }
 
 exports.logout = ('/logout', (request, response) => {

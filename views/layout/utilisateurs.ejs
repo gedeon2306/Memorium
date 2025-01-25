@@ -4,7 +4,7 @@
         <h2><b><i class="fa fa-users fa-fw"></i> Gestion des utilisateurs</b></h2>
 
         <!-- Trigger/Open The Modal -->
-        <button id="myBtn" class="btn btn-bleu">Ajouter un utilisateur <i class="fa fa-add"></i></button>
+        <button id="myBtn" class="btn btn-bleu">Ajouter un utilisateur <i class="fa fa-circle-plus fa-lg"></i></button>
 
         <!-- The Modal -->
         <div id="myModal" class="modal">
@@ -16,10 +16,11 @@
                     <h2>Formuliare d'ajout d'un utilisateur</h2>
                     <div class="photo-upload-container">
                         <label for="photo-upload" class="photo-upload-label" id="photo-upload-label">
-                          <span id="upload-text">📷 Cliquez pour ajouter une photo</span>
+                          <span id="upload-text">📷 Cliquez pour ajouter</span>
                           <input type="file" id="photo-upload" accept="image/*" class="photo-upload-input" />
                         </label>
                       </div>
+                      <br>
                     <div class="input-container">
                         <i class="fa fa-font icon"></i>
                         <input class="input-field" type="text" placeholder="Nom complet" name="nomComplet">
@@ -51,33 +52,51 @@
         </div>
     </section>
     <section style="padding: 16px;">
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+        <div class="input-container">
+            <i class="fa fa-search icon"></i>
+            <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Effectuez une recherche...">
+        </div>
 
         <table id="myTable" class="w3-table w3-striped w3-white">
             <tr class="header">
-                <th>Name</th>
-                <th>Country</th>
-                <th>Nombre</th>
+                <th>N°</th>
+                <th>Photo</th>
+                <th>Nom complet</th>
+                <th>Nom d'utilisateur</th>
+                <th>Mot de passe</th>
+                <th>Rôle</th>
             </tr>
             <tr>
+                <td>1</td>
+                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
                 <td>Alfreds Futterkiste</td>
-                <td>Germany</td>
+                <td>Alfro</td>
                 <td>236</td>
+                <td>Administrateur</td>
             </tr>
             <tr>
+                <td>2</td>
+                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
                 <td>Berglunds snabbkop</td>
                 <td>Sweden</td>
                 <td>36</td>
+                <td>Stagière</td>
             </tr>
             <tr>
+                <td>3</td>
+                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
                 <td>Island Trading</td>
                 <td>UK</td>
-                <td>2</td>
+                <td>UK1234</td>
+                <td>Stagière</td>
             </tr>
             <tr>
+                <td>4</td>
+                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
                 <td>Koniglich Essen</td>
                 <td>Germany</td>
-                <td>6</td>
+                <td>@GHDJJEU</td>
+                <td>Stagière</td>
             </tr>
         </table>
     </section>

@@ -84,15 +84,15 @@
 
   .photo-upload-container {
     text-align: center;
-    margin: 20px;
+    /* margin: 20px; */
   }
 
   /* Label stylisé */
   .photo-upload-label {
     display: inline-block;
     cursor: pointer;
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     border: 2px dashed #ccc;
     border-radius: 100px;
     background-color: #f9f9f9;
