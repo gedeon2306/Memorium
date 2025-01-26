@@ -1,4 +1,4 @@
-<%-include("../composants/header") %>
+<%-include("./composants/header") %>
     <section style="padding: 20px;">
         <h2><b><i class="fa fa-user-friends fa-fw"></i> Gestion des familles</b></h2>
 
@@ -6,10 +6,10 @@
         <button id="myBtn" class="btn btn-bleu">Ajouter une famille <i class="fa fa-circle-plus fa-lg"></i></button>
         
         <!-- Les alerts -->
-        <%-include('../composants/alerts') %>
+        <%-include('./composants/alerts') %>
 
         <!-- Le model -->
-        <%-include('../composants/modalAddFamille') %>
+        <%-include('./composants/modalAddFamille') %>
         
     </section>
     <section style="padding: 16px;">
@@ -59,32 +59,32 @@
                                     <input type="hidden" name="id" value="<%=famille.id %>">
                                     <div class="input-container">
                                         <i class="fa fa-font icon"></i>
-                                        <input class="input-field" type="text" placeholder="Nom de la famille" name="nomFamille" value="<%=famille.nomFamille %>">
+                                        <input class="input-field" type="text" placeholder="Nom de la famille" name="nomFamille" value="<%=famille.nomFamille %>" required>
                                     </div>
                         
                                     <div class="input-container">
                                         <i class="fa fa-font icon"></i>
-                                        <input class="input-field" type="text" placeholder="Nom du garrant" name="nomGarrant" value="<%=famille.nomGarrant %>">
+                                        <input class="input-field" type="text" placeholder="Nom du garrant" name="nomGarrant" value="<%=famille.nomGarrant %>" required>
                                     </div>
                         
                                     <div class="input-container">
                                         <i class="fa fa-font icon"></i>
-                                        <input class="input-field" type="text" placeholder="Prénom du garrant" name="prenomGarrant" value="<%=famille.prenomGarrant %>">
+                                        <input class="input-field" type="text" placeholder="Prénom du garrant" name="prenomGarrant" value="<%=famille.prenomGarrant %>" required>
                                     </div>
                         
                                     <div class="input-container">
                                         <i class="fa fa-gears icon"></i>
-                                        <input class="input-field" type="text" placeholder="Profession" name="profession" value="<%=famille.profession %>">
+                                        <input class="input-field" type="text" placeholder="Profession" name="profession" value="<%=famille.profession %>" required>
                                     </div>
                         
                                     <div class="input-container">
                                         <i class="icon">#</i>
-                                        <input class="input-field" type="text" placeholder="Téléphone" name="telephone" value="<%=famille.telephone %>">
+                                        <input class="input-field" type="text" placeholder="Téléphone" name="telephone" value="<%=famille.telephone %>" required>
                                     </div>
                         
                                     <div class="input-container">
                                         <i class="icon">@</i>
-                                        <input class="input-field" type="email" placeholder="Email" name="email" value="<%=famille.email %>">
+                                        <input class="input-field" type="email" placeholder="Email" name="email" value="<%=famille.email %>" required>
                                     </div>
                         
                                     <button type="submit" class="btnModal">Register</button>
@@ -95,13 +95,14 @@
                         <div id="modalDelete<%=num %>" class="modal">
                             <div class="modal-content delete">
                                 <span class="close" data-modal="modalDelete<%=num %>">×</span>
-                                <form action="/action_page.php">
-                                    <h1 class="deleteHeader">Supprimer le compte <%=num %></h1>
-                                    <p class="deleteContaine">Êtes-vous sûr de vouloir supprimer votre compte ?</p>
+                                <form action="/famille.delete/<%=famille.id%>/<%=token %>" method="get">
+                                    <h1 class="deleteHeader">Supprimer la famille <%=famille.nomFamille %></h1>
+                                    <!-- <input type="hidden" name="token" value=""> -->
+                                    <p class="deleteContaine">Êtes-vous sûr de vouloir supprimer la famille <%=famille.nomFamille %> ?</p>
                                     
                                     <div class="clearfix">
                                         <button type="button" class="cancelbtn closeBtn" data-modal="modalDelete<%=num %>">Annuler</button>
-                                        <button type="button" class="deletebtn">Supprimer</button>
+                                        <button type="submit" class="deletebtn">Supprimer</button>
                                     </div>
                                 </form>
                             </div>
@@ -112,4 +113,4 @@
         </div>
     </section>
         
-<%-include("../composants/footer") %>
+<%-include("./composants/footer") %>
