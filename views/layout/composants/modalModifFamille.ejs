@@ -1,9 +1,8 @@
-<div id="myModal" class="modal">
-    <!-- Modal content -->
+<div id="modal<%=num %>" class="modal">
     <div class="modal-content">
-        <span class="closeAdd">&times;</span>
+        <span class="close" data-modal="modal<%=num %>">&times;</span>
         <form action="/famille.store" method="post">
-            <h2>Formuliare d'ajout d'une famille</h2>
+            <h2>Modifier la famille <%=famille.nomFamille %></h2>
             <input type="hidden" name="token" value="<%=token %>">
             <div class="input-container">
                 <i class="fa fa-font icon"></i>
