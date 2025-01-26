@@ -1,4 +1,37 @@
 const bcrypt = require('bcrypt');  // Utilisation de bcrypt pour sécuriser les mots de passe
+const uuid = require('uuid')
+
+exports.index = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'voir' : false,
+        'utilisateurs' : true,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'historique' : false,
+        'famille' : false,
+    }
+    
+    request.session.token = uuid.v4()
+    let token = request.session.token
+
+    request.getConnection((error, connection) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        connection.query('SELECT * FROM users', [], (error, users) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+
+            response.status(200).render('layout/utilisateurs', {token, actif, users})
+        })
+    })
+}
 
 exports.signup = (request, response) => {
     const nom = request.body.nom;

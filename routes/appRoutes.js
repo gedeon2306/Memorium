@@ -10,8 +10,6 @@ router.get('/ajouter',tacheController.ajouter)
 
 router.get('/voir',tacheController.voir)
 
-router.get('/utilisateurs',tacheController.utilisateurs)
-
 router.get('/stats',tacheController.stats)
 
 router.get('/messages',tacheController.messages)

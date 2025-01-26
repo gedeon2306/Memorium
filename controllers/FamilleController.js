@@ -31,7 +31,7 @@ exports.index = (request, response) => {
                 return response.status(500).render('layout/500', { error })
             }
 
-            response.status(200).render('layout/listeFamille', {token, actif, familles})
+            response.status(200).render('layout/familles', {token, actif, familles})
         })
     })
 }

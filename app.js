@@ -4,8 +4,6 @@ const morgan = require('morgan')
 const session = require('express-session')
 
 const userRoutes = require('./routes/userRoutes')
-const tacheRoutes = require('./routes/tacheRoutes')
-
 const appRoutes = require('./routes/appRoutes')
 const familleRoutes = require('./routes/familleRoutes')
 const dbConfig = require('./database/database')
@@ -30,7 +28,6 @@ app.use(dbConfig)
 app.use(require('./middlewares/flash'))
 
 app.use('/', userRoutes)
-app.use('/', tacheRoutes)
 app.use('/', appRoutes)
 app.use('/', familleRoutes)
 

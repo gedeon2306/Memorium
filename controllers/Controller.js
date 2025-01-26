@@ -28,7 +28,19 @@ exports.index = (request, response)=>{
                     return response.status(500).render('layout/500', { error })
                 }
     
-                response.status(200).render('layout/index', {actif, trous: resultat[0].trous, users: users[0].users})
+                connection.query("SELECT COUNT(id) AS 'femmes' FROM defunts  WHERE genre = 'F'", [], (error, genreF) => {
+                    if (error) {
+                        return response.status(500).render('layout/500', { error })
+                    }
+        
+                    connection.query("SELECT COUNT(id) AS 'hommes' FROM defunts  WHERE genre = 'M'", [], (error, genreM) => {
+                        if (error) {
+                            return response.status(500).render('layout/500', { error })
+                        }
+            
+                        response.status(200).render('layout/index', {actif, trous: resultat[0].trous, users: users[0].users, femmes : genreF[0].femmes, hommes : genreM[0].hommes})
+                    })
+                })
             })
         })
     })
@@ -87,22 +99,6 @@ exports.voir = (request, response)=>{
     response.status(200).render('layout/voir', {actif})
 }
 
-exports.utilisateurs = (request, response)=>{
-    const actif = {
-        'accueil' : false,
-        'liste' : false,
-        'ajouter' : false,
-        'voir' : false,
-        'utilisateurs' : true,
-        'statistique' : false,
-        'messages' : false,
-        'carte' : false,
-        'historique' : false,
-        'famille' : false,
-    }
-    response.status(200).render('layout/utilisateurs', {actif})
-}
-
 exports.stats = (request, response)=>{
     const actif = {
         'accueil' : false,
@@ -148,7 +144,18 @@ exports.carte = (request, response)=>{
         'historique' : false,
         'famille' : false,
     }
-    response.status(200).render('layout/carte', {actif})
+    request.getConnection((error, connection) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        connection.query("SELECT place FROM defunts WHERE place IS NOT NULL", [], (error, resultat) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+            response.status(200).render('layout/carte', {actif, resultat})
+        })
+    })
 }
 
 exports.historique = (request, response)=>{

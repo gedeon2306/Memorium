@@ -17,20 +17,20 @@
                 <div class="w3-container w3-blue w3-padding-16">
                     <div class="w3-left"><i class="fa fa-check-circle w3-xxxlarge"></i></div>
                     <div class="w3-right">
-                        <h3><%=250-trous%>/250</h3>
+                        <h3><%=250-trous%></h3>
                     </div>
                     <div class="w3-clear"></div>
-                    <h4>Disponibles</h4>
+                    <h4><%=trous >=249 ? 'Disponible' : 'Disponibles' %></h4>
                 </div>
             </div>
             <div class="w3-quarter">
                 <div class="w3-container w3-teal w3-padding-16">
                     <div class="w3-left"><i class="fa fa-times-circle w3-xxxlarge"></i></div>
                     <div class="w3-right">
-                        <h3><%=trous%>/250</h3>
+                        <h3><%=trous%></h3>
                     </div>
                     <div class="w3-clear"></div>
-                    <h4>Occupées</h4>
+                    <h4><%=trous <=1 ? 'Occupée' : 'Occupées' %></h4>
                 </div>
             </div>
             <div class="w3-quarter">
@@ -40,7 +40,49 @@
                         <h3><%=users%></h3>
                     </div>
                     <div class="w3-clear"></div>
-                    <h4>Utilisateurs</h4>
+                    <h4><%=users <=1 ? 'Utilisateur' : 'Utilisateurs' %></h4>
+                </div>
+            </div>
+        </div>
+        <div class="w3-row-padding w3-margin-bottom">
+            <div class="w3-quarter">
+                <div class="w3-container w3-pink w3-padding-16">
+                    <div class="w3-left"><i class="fa fa-male w3-xxxlarge"></i></div>
+                    <div class="w3-right">
+                        <h3><%=hommes %></h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4><%=hommes <=1 ? 'Homme' : 'Hommes' %></h4>
+                </div>
+            </div>
+            <div class="w3-quarter">
+                <div class="w3-container w3-green w3-padding-16">
+                    <div class="w3-left"><i class="fa fa-female w3-xxxlarge"></i></div>
+                    <div class="w3-right">
+                        <h3><%=femmes%></h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4><%=femmes <=1 ? 'Femme' : 'Femmes' %></h4>
+                </div>
+            </div>
+            <div class="w3-quarter">
+                <div class="w3-container w3-brown w3-padding-16">
+                    <div class="w3-left"><i class="fa fa-user-tie w3-xxxlarge"></i></div>
+                    <div class="w3-right">
+                        <h3><%=trous%></h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4>Adultes</h4>
+                </div>
+            </div>
+            <div class="w3-quarter">
+                <div class="w3-container w3-purple w3-text-white w3-padding-16">
+                    <div class="w3-left"><i class="fa fa-child w3-xxxlarge"></i></div>
+                    <div class="w3-right">
+                        <h3><%=users%></h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4>Enfants</h4>
                 </div>
             </div>
         </div>
@@ -48,11 +90,11 @@
         <div class="w3-panel">
             <div class="w3-row-padding" style="margin:0 -16px">
                 <div class="w3-third">
-                    <h5>Regions</h5>
+                    <h5>Memorium</h5>
                     <img src="assets/images/logo/memoriumLogo.png" style="width:100%" alt="Logo">
                 </div>
                 <div class="w3-twothird">
-                    <h5>Feeds</h5>
+                    <h5>Derniers Ajouts</h5>
                     <table class="w3-table w3-striped w3-white">
                         <tr>
                             <td><i class="fa fa-user w3-text-blue w3-large"></i></td>
@@ -95,20 +137,40 @@
         </div>
         <hr>
         <div class="w3-container">
-            <h5>General Stats</h5>
-            <p>New Visitors</p>
+            <h5>Statistiques en pourcentage</h5>
+            <p>Total</p>
             <div class="w3-grey">
-                <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
+                <div class="w3-container w3-center w3-padding w3-red" style="width:100%">100%</div>
             </div>
 
-            <p>New Users</p>
+            <p>Occupé</p>
             <div class="w3-grey">
-                <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
+                <div class="w3-container w3-center w3-padding w3-blue" style="width:<%=(trous*100)/250%>%"><%=(trous*100)/250%>%</div>
             </div>
 
-            <p>Bounce Rate</p>
+            <p>Disponible</p>
             <div class="w3-grey">
-                <div class="w3-container w3-center w3-padding w3-red" style="width:75%">75%</div>
+                <div class="w3-container w3-center w3-padding w3-teal" style="width:<%=((250-trous)*100)/250%>%"><%=((250-trous)*100)/250%>%</div>
+            </div>
+
+            <p>Hommes</p>
+            <div class="w3-grey">
+                <div class="w3-container w3-center w3-padding w3-pink" style="width:<%=((hommes*100)/trous)%>%"><%=((hommes*100)/trous)%>%</div>
+            </div>
+
+            <p>Femmes</p>
+            <div class="w3-grey">
+                <div class="w3-container w3-center w3-padding w3-green" style="width:<%=((femmes*100)/trous)%>%"><%=((hommes*100)/trous)%>%</div>
+            </div>
+
+            <p>Adultes</p>
+            <div class="w3-grey">
+                <div class="w3-container w3-center w3-padding w3-brown" style="width:<%=((femmes*100)/trous)%>%"><%=((hommes*100)/trous)%>%</div>
+            </div>
+
+            <p>Enfants</p>
+            <div class="w3-grey">
+                <div class="w3-container w3-center w3-padding w3-purple" style="width:<%=((femmes*100)/trous)%>%"><%=((hommes*100)/trous)%>%</div>
             </div>
         </div>
         <hr>

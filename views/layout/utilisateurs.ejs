@@ -22,41 +22,25 @@
                 <th>Photo</th>
                 <th>Nom complet</th>
                 <th>Nom d'utilisateur</th>
-                <th>Mot de passe</th>
                 <th>Rôle</th>
+                <th>Action</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
-                <td>Alfreds Futterkiste</td>
-                <td>Alfro</td>
-                <td>236</td>
-                <td>Administrateur</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
-                <td>Berglunds snabbkop</td>
-                <td>Sweden</td>
-                <td>36</td>
-                <td>Stagière</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
-                <td>Island Trading</td>
-                <td>UK</td>
-                <td>UK1234</td>
-                <td>Stagière</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
-                <td>Koniglich Essen</td>
-                <td>Germany</td>
-                <td>@GHDJJEU</td>
-                <td>Stagière</td>
-            </tr>
+            <% if (users.length === 0) { %>
+                <tr>
+                    <td colspan="8" style="text-align: center;">Aucun enregistrement disponible</td>
+                </tr>
+            <% }else{ %>
+                <% let num = 0; users.forEach(user => { %>
+                    <tr>
+                        <td><%=num+=1 %></td>
+                        <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
+                        <td><%=nomComplet %></td>
+                        <td><%=userName %></td>
+                        <td><%=role %></td>
+                        <td> X X</td>
+                    </tr>
+                <% }) %>
+            <% } %>
         </table>
     </section>
 
