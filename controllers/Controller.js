@@ -1,3 +1,4 @@
+const uuid = require('uuid')
 
 exports.index = (request, response)=>{
     const actif = {
@@ -12,7 +13,25 @@ exports.index = (request, response)=>{
         'history' : false,
         'famille' : false,
     }
-    response.status(200).render('layout/index', {actif})
+    request.getConnection((error, connection) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        connection.query("SELECT COUNT(id) AS 'trous' FROM defunts WHERE place IS NOT NULL", [], (error, resultat) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+
+            connection.query("SELECT COUNT(id) as 'users' FROM users", [], (error, users) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+    
+                response.status(200).render('layout/index', {actif, trous: resultat[0].trous, users: users[0].users})
+            })
+        })
+    })
 }
 
 exports.liste = (request, response)=>{
@@ -35,6 +54,8 @@ exports.liste = (request, response)=>{
 }
 
 exports.ajouter = (request, response)=>{
+    request.session.token = uuid.v4()
+    let token = request.session.token
     const actif = {
         'accueil' : false,
         'liste' : false,
@@ -47,7 +68,7 @@ exports.ajouter = (request, response)=>{
         'historique' : false,
         'famille' : false,
     }
-    response.status(200).render('layout/ajouter', {actif})
+    response.status(200).render('layout/ajouter', {actif, token})
 }
 
 exports.voir = (request, response)=>{
@@ -144,22 +165,6 @@ exports.historique = (request, response)=>{
         'famille' : false,
     }
     response.status(200).render('layout/historique', {actif})
-}
-
-exports.famille = (request, response)=>{
-    const actif = {
-        'accueil' : false,
-        'liste' : false,
-        'ajouter' : false,
-        'voir' : false,
-        'utilisateurs' : false,
-        'statistique' : false,
-        'messages' : false,
-        'carte' : false,
-        'historique' : false,
-        'famille' : true,
-    }
-    response.status(200).render('layout/famille', {actif})
 }
 
 exports.logout = ('/logout', (request, response) => {

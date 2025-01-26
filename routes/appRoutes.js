@@ -20,8 +20,6 @@ router.get('/carte',tacheController.carte)
 
 router.get('/historique',tacheController.historique)
 
-router.get('/famille',tacheController.famille)
-
 router.get('/logout',tacheController.logout)
 
 module.exports = router

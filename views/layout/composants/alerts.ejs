@@ -1,0 +1,13 @@
+<% if (locals.flash && locals.flash.error) { %>
+    <div class="alert error">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <%= flash.error %>
+    </div>
+<% } %>
+
+<% if (locals.flash && locals.flash.success) { %>
+    <div class="alert success">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <%= flash.success %>
+    </div>
+<% } %>

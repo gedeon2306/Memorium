@@ -5,5 +5,37 @@ h2,
 h3,
 h4,
 h5 {
-    font-family: "Raleway", sans-serif
+  font-family: "Raleway", sans-serif
+}
+
+.alert {
+  padding: 20px;
+  color: white;
+  margin-bottom: 15px;
+  margin-top: 20px;
+}
+
+.error {
+  background-color: #f44336;
+}
+
+.success {
+  background-color: #6cf436;
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
 }
