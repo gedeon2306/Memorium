@@ -33,10 +33,10 @@
                 <% let num = 0; users.forEach(user => { %>
                     <tr>
                         <td><%=num+=1 %></td>
-                        <td><img src="assets/images/user.png" alt="imgUser" style="width: 50px; height: auto;"></td>
-                        <td><%=nomComplet %></td>
-                        <td><%=userName %></td>
-                        <td><%=role %></td>
+                        <td><img src="<%= user.photo === null ? 'assets/images/user.png' : 'assets/images/imagesUsers/'+user.photo %>" alt="imgUser" style="width: 50px; height: auto;"></td>
+                        <td><%=user.nomComplet %></td>
+                        <td><%=user.userName %></td>
+                        <td><%=user.role %></td>
                         <td> X X</td>
                     </tr>
                 <% }) %>

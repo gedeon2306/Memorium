@@ -69,20 +69,20 @@
                 <div class="w3-container w3-brown w3-padding-16">
                     <div class="w3-left"><i class="fa fa-user-tie w3-xxxlarge"></i></div>
                     <div class="w3-right">
-                        <h3><%=trous%></h3>
+                        <h3><%=adultes%></h3>
                     </div>
                     <div class="w3-clear"></div>
-                    <h4>Adultes</h4>
+                    <h4><%=adultes <=1 ? 'Adulte' : 'Adultes' %></h4>
                 </div>
             </div>
             <div class="w3-quarter">
                 <div class="w3-container w3-purple w3-text-white w3-padding-16">
                     <div class="w3-left"><i class="fa fa-child w3-xxxlarge"></i></div>
                     <div class="w3-right">
-                        <h3><%=users%></h3>
+                        <h3><%=mineurs%></h3>
                     </div>
                     <div class="w3-clear"></div>
-                    <h4>Mineurs</h4>
+                    <h4><%=mineurs <=1 ? 'Mineur' : 'Mineurs' %></h4>
                 </div>
             </div>
         </div>
@@ -138,14 +138,14 @@
         <hr>
         <div class="w3-container">
             <h5>Statistiques en pourcentage</h5>
-            <p>Total</p>
+            <p>Total de trous</p>
             <div class="w3-grey">
                 <div class="w3-container w3-center w3-padding w3-red" style="width:100%">100%</div>
             </div>
 
-            <p>Occupé</p>
+            <p>Occupée</p>
             <div class="w3-grey">
-                <div class="w3-container w3-center w3-padding w3-blue" style="width:<%=(trous*100)/250%>%"><%=(trous*100)/250%>%</div>
+                <div class="w3-container w3-center w3-padding w3-blue" style="width:<%=((trous*100)/250).toFixed(2)%>%"><%=((trous*100)/250).toFixed(2)%>%</div>
             </div>
 
             <p>Disponible</p>
@@ -165,12 +165,12 @@
 
             <p>Adultes</p>
             <div class="w3-grey">
-                <div class="w3-container w3-center w3-padding w3-brown" style="width:<%=((hommes*100)/trous).toFixed(2)%>%"><%=((hommes*100)/trous).toFixed(2)%>%</div>
+                <div class="w3-container w3-center w3-padding w3-brown" style="width:<%=((adultes*100)/trous).toFixed(2)%>%"><%=((adultes*100)/trous).toFixed(2)%>%</div>
             </div>
 
             <p>Mineurs</p>
             <div class="w3-grey">
-                <div class="w3-container w3-center w3-padding w3-purple" style="width:<%=((femmes*100)/trous).toFixed(2)%>%"><%=((femmes*100)/trous).toFixed(2)%>%</div>
+                <div class="w3-container w3-center w3-padding w3-purple" style="width:<%=((mineurs*100)/trous).toFixed(2)%>%"><%=((mineurs*100)/trous).toFixed(2)%>%</div>
             </div>
         </div>
         <hr>

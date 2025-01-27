@@ -38,7 +38,19 @@ exports.index = (request, response)=>{
                             return response.status(500).render('layout/500', { error })
                         }
             
-                        response.status(200).render('layout/index', {actif, trous: resultat[0].trous, users: users[0].users, femmes : genreF[0].femmes, hommes : genreM[0].hommes})
+                        connection.query("SELECT COUNT(id) AS 'adultes' FROM defunts  WHERE age >= 18", [], (error, adultes) => {
+                            if (error) {
+                                return response.status(500).render('layout/500', { error })
+                            }
+                
+                            connection.query("SELECT COUNT(id) AS 'mineurs' FROM defunts  WHERE age < 18", [], (error, mineurs) => {
+                                if (error) {
+                                    return response.status(500).render('layout/500', { error })
+                                }
+                    
+                                response.status(200).render('layout/index', {actif, trous: resultat[0].trous, users: users[0].users, femmes : genreF[0].femmes, hommes : genreM[0].hommes, adultes : adultes[0].adultes, mineurs : mineurs[0].mineurs})
+                            })
+                        })
                     })
                 })
             })

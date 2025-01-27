@@ -1,5 +1,29 @@
 const bcrypt = require('bcrypt');  // Utilisation de bcrypt pour sécuriser les mots de passe
 const uuid = require('uuid')
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Chemin vers le dossier public/uploads
+const uploadPath = path.join('./public/images/imagesUsers');
+
+// Vérifier et créer le dossier public/uploads s'il n'existe pas
+if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+}
+
+// Configuration de multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadPath); // Dossier où les images seront enregistrées
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage }).single('image'); // Champ 'image' dans le formulaire
 
 exports.index = (request, response)=>{
     const actif = {
@@ -33,67 +57,47 @@ exports.index = (request, response)=>{
     })
 }
 
-exports.signup = (request, response) => {
-    const nom = request.body.nom;
-    const email = request.body.email;
-    const password = request.body.password;
-
-    // Hacher le mot de passe avant de l'enregistrer
-    bcrypt.hash(password, 10, (error, hashedPassword) => {
+exports.store = (request, response) => {
+    upload(request, response, (error) => {
         if (error) {
-            const context = {
-                erreur : error,
-                statut : 500,
-                url : "/pageInscription"
-            }
-            return response.status(500).render('layout/erreur', { context });
+            return response.status(500).render('layout/500', { error });
         }
 
-        request.getConnection((error, connection) => {
+        const nomComplet = request.body.nomComplet;
+        const userName = request.body.userName;
+        const passWord = request.body.passWord;
+        const role = request.body.role;
+        const imagePath = request.file ? request.file.path.replace(/\\/g, '/').replace('public/images/imagesUsers/', '') : null;
+
+        bcrypt.hash(passWord, 10, (error, hashedPassword) => {
             if (error) {
-                const context = {
-                    erreur : error,
-                    statut : 500,
-                    url : "/pageInscription"
-                }
-                return response.status(500).render('layout/erreur', { context });
+                return response.status(500).render('layout/500', { error });
             }
 
-            // Vérifier si l'email est déjà pris
-            connection.query('SELECT * FROM users WHERE email = ?', [email], (error, results) => {
+            request.getConnection((error, connection) => {
                 if (error) {
-                    const context = {
-                        erreur : error,
-                        statut : 500,
-                        url : "/pageInscription"
-                    }
-                    return response.status(500).render('layout/erreur', { context });
+                    return response.status(500).render('layout/500', { error });
                 }
 
-                if (results.length > 0) {
-                    const context = {
-                        titre : "400 | Requete invalide",
-                        erreur : "Cet email est déjà utilisé.",
-                        statut : 400,
-                        url : "/pageInscription"
-                    }
-                    return response.status(400).render('layout/404', { context });
-                }
-
-                // Insérer le nouvel utilisateur dans la base de données
-                const query = 'INSERT INTO users (nom, email, password) VALUES (?, ?, ?)';
-                connection.query(query, [nom, email, hashedPassword], (error, results) => {
+                connection.query('SELECT * FROM users WHERE userName = ?', [userName], (error, results) => {
                     if (error) {
-                        const context = {
-                            erreur : error,
-                            statut : 500,
-                            url : "/pageInscription"
-                        }
-                        return response.status(500).render('layout/erreur', { context });
+                        return response.status(500).render('layout/500', { error });
                     }
 
-                    // Rediriger l'utilisateur vers la page de connexion après l'inscription
-                    response.status(300).redirect('/pageConnexion');
+                    if (results.length > 0) {
+                        request.flash('error', 'Nom d\'utilisateur invalide Réesayez');
+                        return response.status(400).redirect('/user.index');
+                    }
+
+                    const query = 'INSERT INTO users (nomComplet, userName, passWord, role, photo) VALUES (?, ?, ?, ?, ?)';
+                    connection.query(query, [nomComplet, userName, hashedPassword, role, imagePath], (error, results) => {
+                        if (error) {
+                            return response.status(500).render('layout/500', { error });
+                        }
+
+                        request.flash('success', 'Utilisateur enregistré');
+                        return response.status(400).redirect('/user.index');
+                    });
                 });
             });
         });
@@ -106,32 +110,32 @@ exports.login = (request, response) => {
 
     request.getConnection((error, connection) => {
         if (error) {
-            const context = {
+            const error = {
                 erreur: error,
                 statut: 500,
                 url: "/pageConnexion"
             };
-            return response.status(500).render('layout/erreur', { context });
+            return response.status(500).render('layout/500', { error });
         }
 
         // Vérifier si l'utilisateur existe dans la base de données
         connection.query('SELECT * FROM users WHERE email = ?', [email], (error, results) => {
             if (error) {
-                const context = {
+                const error = {
                     erreur: error,
                     statut: 500,
                     url: "/pageConnexion"
                 };
-                return response.status(500).render('layout/erreur', { context });
+                return response.status(500).render('layout/500', { error });
             }
 
             if (results.length === 0) {
-                const context = {
+                const error = {
                     erreur: "Utilisateur non trouvé.",
                     statut: 400,
                     url: "/pageConnexion"
                 };
-                return response.status(400).render('layout/404', { context });
+                return response.status(400).render('layout/404', { error });
             }
 
             // Récupérer l'utilisateur trouvé
@@ -140,22 +144,22 @@ exports.login = (request, response) => {
             // Comparer le mot de passe fourni avec le mot de passe haché stocké
             bcrypt.compare(password, user.password, (err, isMatch) => {
                 if (err) {
-                    const context = {
+                    const error = {
                         erreur: err,
                         statut: 500,
                         url: "/pageConnexion"
                     };
-                    return response.status(500).render('layout/erreur', { context });
+                    return response.status(500).render('layout/500', { error });
                 }
 
                 if (!isMatch) {
-                    const context = {
+                    const error = {
                         titre : "400 | Requete invalide",
                         erreur: "Mot de passe incorrect.",
                         statut: 400,
                         url: "/pageConnexion"
                     };
-                    return response.status(400).render('layout/404', { context });
+                    return response.status(400).render('layout/404', { error });
                 }
 
                 // Si l'authentification réussit

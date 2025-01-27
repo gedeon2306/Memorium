@@ -54,27 +54,14 @@ exports.store = (request, response) =>{
             return response.status(500).render('layout/500', { erreur })
         }
 
-        if (token!=request.session.token || token === undefined || token === '' ) {
-            request.flash('error', "token invalide")
-            return response.status(300).redirect('/famille.index')
-        }else if (nomFamille === undefined || nomFamille === ''){
-            request.flash('error', "Entrez le nom de la famille")
-            return response.status(300).redirect('/famille.index')
-        }else if (nomGarrant === undefined || nomGarrant === ''){
-            request.flash('error', "Entrez le nom du garrant")
-            return response.status(300).redirect('/famille.index')
-        }else if (prenomGarrant === undefined || prenomGarrant === ''){
-            request.flash('error', "Entrez le prenom du garrant")
-            return response.status(300).redirect('/famille.index')
-        }else if (profession === undefined || profession === ''){
-            request.flash('error', "Entrez la profession")
-            return response.status(300).redirect('/famille.index')
-        }else if (telephone === undefined || telephone === ''){
-            request.flash('error', "Entrez le numéro de téléphone")
-            return response.status(300).redirect('/famille.index')
-        }else if (email === undefined || email === ''){
-            request.flash('error', "Entrez l'adresse email'")
-            return response.status(300).redirect('/famille.index')
+        if (!token || token !== request.session.token) {
+            request.flash('error', 'Token invalide');
+            return response.status(400).redirect('/famille.index');
+        }
+
+        if (!nomFamille || !nomGarrant || !prenomGarrant || !profession || !telephone || !email) {
+            request.flash('error', 'Tous les champs sont obligatoires');
+            return response.status(400).redirect('/famille.index');
         }
 
         connection.query('SELECT * FROM familles WHERE email = ?', [email], (error, results) => {
@@ -84,7 +71,7 @@ exports.store = (request, response) =>{
 
             if (results.length > 0) {
                 request.flash('error', "email déjà utilisé")
-                return response.status(300).redirect('/famille.index')
+                return response.status(400).redirect('/famille.index')
             }
 
             connection.query('SELECT * FROM familles WHERE telephone = ?', [telephone], (error, results) => {
@@ -94,7 +81,7 @@ exports.store = (request, response) =>{
     
                 if (results.length > 0) {
                     request.flash('error', "Numéro de téléphone déjà utilisé")
-                    return response.status(300).redirect('/famille.index')
+                    return response.status(400).redirect('/famille.index')
                 }
 
                 connection.query(
@@ -132,27 +119,14 @@ exports.update = (request, response) =>{
             return response.status(500).render('layout/500', { error })
         }
 
-        if (token!=request.session.token || token === undefined || token === '' ) {
-            request.flash('error', "token invalide")
-            return response.status(300).redirect('/famille.index')
-        }else if (nomFamille === undefined || nomFamille === ''){
-            request.flash('error', "Entrez le nom de la famille")
-            return response.status(300).redirect('/famille.index')
-        }else if (nomGarrant === undefined || nomGarrant === ''){
-            request.flash('error', "Entrez le nom du garrant")
-            return response.status(300).redirect('/famille.index')
-        }else if (prenomGarrant === undefined || prenomGarrant === ''){
-            request.flash('error', "Entrez le prenom du garrant")
-            return response.status(300).redirect('/famille.index')
-        }else if (profession === undefined || profession === ''){
-            request.flash('error', "Entrez la profession")
-            return response.status(300).redirect('/famille.index')
-        }else if (telephone === undefined || telephone === ''){
-            request.flash('error', "Entrez le numéro de téléphone")
-            return response.status(300).redirect('/famille.index')
-        }else if (email === undefined || email === ''){
-            request.flash('error', "Entrez l'adresse email'")
-            return response.status(300).redirect('/famille.index')
+        if (!token || token !== request.session.token) {
+            request.flash('error', 'Token invalide');
+            return response.status(400).redirect('/famille.index');
+        }
+
+        if (!nomFamille || !nomGarrant || !prenomGarrant || !profession || !telephone || !email) {
+            request.flash('error', 'Tous les champs sont obligatoires');
+            return response.status(400).redirect('/famille.index');
         }
 
         connection.query('SELECT * FROM familles WHERE email = ? AND id != ? ', [email, id], (error, results) => {
@@ -162,7 +136,7 @@ exports.update = (request, response) =>{
 
             if (results.length > 0) {
                 request.flash('error', "email déjà utilisé")
-                return response.status(300).redirect('/famille.index')
+                return response.status(400).redirect('/famille.index')
             }
 
             connection.query('SELECT * FROM familles WHERE telephone = ? AND id != ?', [telephone, id], (error, results) => {
@@ -172,7 +146,7 @@ exports.update = (request, response) =>{
     
                 if (results.length > 0) {
                     request.flash('error', "Numéro de téléphone déjà utilisé")
-                    return response.status(300).redirect('/famille.index')
+                    return response.status(400).redirect('/famille.index')
                 }
 
                 connection.query(
@@ -204,15 +178,26 @@ exports.delete = (request, response) =>{
 
         if (token!=request.session.token || token === undefined || token === '' ) {
             request.flash('error', "token invalide")
-            return response.status(300).redirect('/famille.index')
+            return response.status(400).redirect('/famille.index')
         }
 
-        connection.query('DELETE FROM familles WHERE id = ?', [id], (error)=>{
+        connection.query('SELECT * FROM familles WHERE id = ?', [id], (error, resultat)=>{
             if (error) {
                 return response.status(500).render('layout/500', { error })
             }
-            request.flash('success', "Famille supprimée")
-            return response.status(300).redirect('/famille.index')
+            
+            if(resultat.length === 0){
+                request.flash('error', "Famille non trouvée")
+                return response.status(400).redirect('/famille.index')
+            }
+
+            connection.query('DELETE FROM familles WHERE id = ?', [id], (error)=>{
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+                request.flash('success', "Famille supprimée")
+                return response.status(300).redirect('/famille.index')
+            })
         })
     })
 }
