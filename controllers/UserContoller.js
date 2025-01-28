@@ -104,6 +104,99 @@ exports.store = (request, response) => {
     });
 };
 
+exports.update = (request, response) => {
+    upload(request, response, (error) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error });
+        }
+
+        const nomComplet = request.body.nomComplet;
+        const userName = request.body.userName;
+        const passWord = request.body.passWord;
+        const role = request.body.role;
+        const userId = request.body.id;
+        const imagePath = request.file ? request.file.path.replace(/\\/g, '/').replace('public/images/imagesUsers/', '') : null;
+
+        // Vérifier l'unicité du `username`
+        request.getConnection((error, connection) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error });
+            }
+
+            connection.query('SELECT * FROM users WHERE userName = ? AND id != ?', [userName, userId], (error, results) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error });
+                }
+
+                if (results.length > 0) {
+                    request.flash('error', 'Nom d\'utilisateur déjà utilisé. Veuillez en choisir un autre.');
+                    return response.status(400).redirect('/user.edit/' + userId);
+                }
+
+                // Si le nom d'utilisateur est unique, continuer la mise à jour
+                function prepareUpdate() {
+                    let updateQuery = 'UPDATE users SET nomComplet = ?, userName = ?, role = ?';
+                    let params = [nomComplet, userName, role];
+                    
+                    // Si un mot de passe est fourni, hashez-le
+                    if (passWord) {
+                        bcrypt.hash(passWord, 10, (error, hashedPassword) => {
+                            if (error) {
+                                return response.status(500).render('layout/500', { error });
+                            }
+                            updateQuery += ', passWord = ?';
+                            params.push(hashedPassword);
+                            executeUpdate(updateQuery, params);
+                        });
+                    } else {
+                        executeUpdate(updateQuery, params);
+                    }
+                }
+
+                function executeUpdate(query, params) {
+                    // Vérifiez si une nouvelle image est uploadée
+                    if (imagePath) {
+                        query += ', photo = ?';
+                        params.push(imagePath);
+                        
+                        // Suppression de l'ancienne image si elle existe
+                        connection.query('SELECT photo FROM users WHERE userId = ?', [userId], (error, results) => {
+                            if (error) {
+                                return response.status(500).render('layout/500', { error });
+                            }
+                            if (results[0].photo) {
+                                const oldImagePath = `public/images/imagesUsers/${results[0].photo}`;
+                                fs.unlink(oldImagePath, (err) => {
+                                    if (err) console.error("Erreur lors de la suppression de l'image:", err);
+                                });
+                            }
+                            
+                            finalUpdate(query, params);
+                        });
+                    } else {
+                        finalUpdate(query, params);
+                    }
+                }
+
+                function finalUpdate(query, params) {
+                    query += ' WHERE id = ?';
+                    params.push(userId);
+                    
+                    connection.query(query, params, (error) => {
+                        if (error) {
+                            return response.status(500).render('layout/500', { error });
+                        }
+                        request.flash('success', 'Utilisateur mis à jour');
+                        return response.status(200).redirect('/user.index');
+                    });
+                }
+
+                prepareUpdate();
+            });
+        });
+    });
+};
+
 exports.login = (request, response) => {
     const email = request.body.email;
     const password = request.body.password;
