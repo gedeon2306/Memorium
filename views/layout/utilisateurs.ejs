@@ -47,7 +47,7 @@
                     </tr>
                     <!-- Modification -->
                     <div id="modal<%=num %>" class="modal">
-                        <div class="modal-content">
+                        <div class="modal-content animate-modal">
                             <span class="close" data-modal="modal<%=num %>">&times;</span>
                             <form action="/user.update" method="post" enctype="multipart/form-data">
                                 <h2>Modifier l'utilisateur <%=user.nomComplet %></h2>
@@ -88,7 +88,7 @@
                     </div>
                     <!-- Suppression -->
                     <div id="modalDelete<%=num %>" class="modal">
-                        <div class="modal-content delete">
+                        <div class="modal-content animate-modal delete">
                             <span class="close" data-modal="modalDelete<%=num %>">×</span>
                             <form action="/user.delete/<%=user.id%>/<%=token %>" method="get">
                                 <h1 class="deleteHeader">Supprimer l'utilisateur' <%=user.nomComplet %></h1>

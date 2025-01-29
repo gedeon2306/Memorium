@@ -266,12 +266,41 @@ exports.login = (request, response) => {
     });
 };
 
-exports.pageConnexion = (request, response) =>{
-    const titre = 'Connexion'
-    response.status(200).render('layout/login', {titre})
-}
+exports.delete = (request, response) =>{
+    // if (!request.session.userId) {
+    //     return response.redirect('/pageConnexion') // Si l'utilisateur n'est pas connecté, le rediriger
+    // }
+    
+    const id = request.params.id
+    const token = request.params.token ? request.params.token : undefined
 
-exports.pageInscription = (request, response) =>{
-    const titre = 'Inscription'
-    response.status(200).render('layout/register', {titre})
+    request.getConnection((error, connection)=>{
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        if (token!=request.session.token || token === undefined || token === '' ) {
+            request.flash('error', "token invalide")
+            return response.status(400).redirect('/user.index')
+        }
+
+        connection.query('SELECT * FROM users WHERE id = ?', [id], (error, resultat)=>{
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+            
+            if(resultat.length === 0){
+                request.flash('error', "Utilisateur non trouvé")
+                return response.status(400).redirect('/famille.index')
+            }
+
+            connection.query('DELETE FROM users WHERE id = ?', [id], (error)=>{
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+                request.flash('success', "Utilisateur supprimé")
+                return response.status(300).redirect('/user.index')
+            })
+        })
+    })
 }

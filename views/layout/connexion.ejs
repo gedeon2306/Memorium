@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/css/connexion.css">
+</head>
+<body>
+
+<h2 class="title">Modal Login Form</h2>
+
+<button class="login-button" onclick="document.getElementById('modal-login').style.display='block'" style="width:auto;">Login</button>
+
+<div id="modal-login" class="modal-background">
+  
+  <form class="modal-content animate-modal" action="/action_page.php" method="post">
+    <div class="image-container">
+      <span onclick="document.getElementById('modal-login').style.display='none'" class="close-button" title="Close Modal">×</span>
+      <img src="assets/images/user.png" alt="Avatar" class="avatar-image">
+    </div>
+
+    <div class="form-container">
+      <label for="userName"><b>Nom d'utilisateur</b></label>
+      <input type="text" placeholder="Entrez le nom d'utilisateur" name="userName" required class="input-field-login">
+
+      <label for="passWord"><b>Mot de passe</b></label>
+      <input type="password" placeholder="Entrez le mot de passe" name="passWord" required class="input-field-login">
+        
+      <button type="submit" class="button">Se connecter</button>
+      <label>
+        <input type="checkbox" checked="checked" name="remember"> Se souvenir de moi
+      </label>
+    </div>
+
+    <div class="form-container" style="background-color:#f1f1f1">
+      <button type="button" onclick="document.getElementById('modal-login').style.display='none'" class="cancel-button">Annuler</button>
+      <span class="forgot-password">Mot de passe <a href="#">oublié ?</a></span>
+    </div>
+  </form>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('modal-login');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>

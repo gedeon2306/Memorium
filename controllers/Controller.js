@@ -1,3 +1,4 @@
+const { request, response } = require('express')
 const uuid = require('uuid')
 
 exports.index = (request, response)=>{
@@ -5,7 +6,7 @@ exports.index = (request, response)=>{
         'accueil' : true,
         'liste' : false,
         'ajouter' : false,
-        'voir' : false,
+        'payement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
@@ -66,7 +67,7 @@ exports.liste = (request, response)=>{
         'accueil' : false,
         'liste' : true,
         'ajouter' : false,
-        'voir' : false,
+        'payement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
@@ -84,7 +85,7 @@ exports.ajouter = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : true,
-        'voir' : false,
+        'payement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
@@ -95,12 +96,12 @@ exports.ajouter = (request, response)=>{
     response.status(200).render('layout/ajouter', {actif, token})
 }
 
-exports.voir = (request, response)=>{
+exports.payement = (request, response)=>{
     const actif = {
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'voir' : true,
+        'payement' : true,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
@@ -108,7 +109,7 @@ exports.voir = (request, response)=>{
         'historique' : false,
         'famille' : false,
     }
-    response.status(200).render('layout/voir', {actif})
+    response.status(200).render('layout/payement', {actif})
 }
 
 exports.stats = (request, response)=>{
@@ -116,7 +117,7 @@ exports.stats = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'voir' : false,
+        'payement' : false,
         'utilisateurs' : false,
         'statistique' : true,
         'messages' : false,
@@ -132,7 +133,7 @@ exports.messages = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'voir' : false,
+        'payement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : true,
@@ -148,7 +149,7 @@ exports.carte = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'voir' : false,
+        'payement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
@@ -175,7 +176,7 @@ exports.historique = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'voir' : false,
+        'payement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
@@ -185,6 +186,10 @@ exports.historique = (request, response)=>{
     }
     response.status(200).render('layout/historique', {actif})
 }
+
+exports.login = ('/Connexion', (request, response)=>{
+    response.status(200).render('layout/connexion')
+})
 
 exports.logout = ('/logout', (request, response) => {
     // Détruire la session
