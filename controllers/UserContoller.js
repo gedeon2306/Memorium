@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');  // Utilisation de bcrypt pour sécuriser les mots de passe
+const bcrypt = require('bcrypt')  // Utilisation de bcrypt pour sécuriser les mots de passe
 const uuid = require('uuid')
 const multer = require('multer');
 const path = require('path');
@@ -15,7 +15,7 @@ if (!fs.existsSync(uploadPath)) {
 // Configuration de multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadPath); // Dossier où les images seront enregistrées
+        cb(null, uploadPath) // Dossier où les images seront enregistrées
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -23,9 +23,13 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage }).single('image'); // Champ 'image' dans le formulaire
+const upload = multer({ storage: storage }).single('image') // Champ 'image' dans le formulaire
 
 exports.index = (request, response)=>{
+    if (!request.session.userId) {
+        return response.redirect('/connexion')
+    }
+
     const actif = {
         'accueil' : false,
         'liste' : false,
@@ -37,6 +41,8 @@ exports.index = (request, response)=>{
         'carte' : false,
         'historique' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     
     request.session.token = uuid.v4()
@@ -63,6 +69,7 @@ exports.store = (request, response) => {
             return response.status(500).render('layout/500', { error });
         }
 
+        const token = request.body.token;
         const nomComplet = request.body.nomComplet;
         const userName = request.body.userName;
         const passWord = request.body.passWord;
@@ -77,6 +84,16 @@ exports.store = (request, response) => {
             request.getConnection((error, connection) => {
                 if (error) {
                     return response.status(500).render('layout/500', { error });
+                }
+
+                if (!token || token !== request.session.token) {
+                    request.flash('error', 'Token invalide');
+                    return response.status(400).redirect('/user.index');
+                }
+        
+                if (!nomComplet || !userName || !passWord || !role) {
+                    request.flash('error', 'Tous les champs sont obligatoires');
+                    return response.status(400).redirect('/user.index');
                 }
 
                 connection.query('SELECT * FROM users WHERE userName = ?', [userName], (error, results) => {
@@ -105,6 +122,10 @@ exports.store = (request, response) => {
 };
 
 exports.update = (request, response) => {
+    if (!request.session.userId) {
+        return response.redirect('/connexion')
+    }
+
     upload(request, response, (error) => {
         if (error) {
             return response.status(500).render('layout/500', { error });
@@ -121,6 +142,15 @@ exports.update = (request, response) => {
         request.getConnection((error, connection) => {
             if (error) {
                 return response.status(500).render('layout/500', { error });
+            }
+
+            if (error) {
+                return response.status(500).render('layout/500', { error });
+            }
+
+            if (!token || token !== request.session.token) {
+                request.flash('error', 'Token invalide');
+                return response.status(400).redirect('/user.index');
             }
 
             connection.query('SELECT * FROM users WHERE userName = ? AND id != ?', [userName, userId], (error, results) => {
@@ -198,69 +228,46 @@ exports.update = (request, response) => {
 };
 
 exports.login = (request, response) => {
-    const email = request.body.email;
-    const password = request.body.password;
+    const userName = request.body.userName;
+    const passWord = request.body.passWord;
 
     request.getConnection((error, connection) => {
         if (error) {
-            const error = {
-                erreur: error,
-                statut: 500,
-                url: "/pageConnexion"
-            };
             return response.status(500).render('layout/500', { error });
         }
 
         // Vérifier si l'utilisateur existe dans la base de données
-        connection.query('SELECT * FROM users WHERE email = ?', [email], (error, results) => {
+        connection.query('SELECT * FROM users WHERE userName = ?', [userName], (error, results) => {
             if (error) {
-                const error = {
-                    erreur: error,
-                    statut: 500,
-                    url: "/pageConnexion"
-                };
                 return response.status(500).render('layout/500', { error });
             }
 
             if (results.length === 0) {
-                const error = {
-                    erreur: "Utilisateur non trouvé.",
-                    statut: 400,
-                    url: "/pageConnexion"
-                };
-                return response.status(400).render('layout/404', { error });
+                const error = "Utilisateur non trouvé."
+                return response.status(400).render('layout/500', { error });
             }
 
             // Récupérer l'utilisateur trouvé
             const user = results[0];
 
             // Comparer le mot de passe fourni avec le mot de passe haché stocké
-            bcrypt.compare(password, user.password, (err, isMatch) => {
-                if (err) {
-                    const error = {
-                        erreur: err,
-                        statut: 500,
-                        url: "/pageConnexion"
-                    };
+            bcrypt.compare(passWord, user.passWord, (err, isMatch) => {
+                if (error) {
                     return response.status(500).render('layout/500', { error });
                 }
 
                 if (!isMatch) {
-                    const error = {
-                        titre : "400 | Requete invalide",
-                        erreur: "Mot de passe incorrect.",
-                        statut: 400,
-                        url: "/pageConnexion"
-                    };
-                    return response.status(400).render('layout/404', { error });
+                    const error = "Mot de passe incorrect."
+                    return response.status(400).render('layout/500', { error });
                 }
 
                 // Si l'authentification réussit
-                request.session.userId = user.id; 
-                request.session.userName = user.name;
+                request.session.userId = user.id 
+                request.session.nom = user.nomComplet;
+                request.session.photo = user.photo;
 
                 // Rediriger vers la liste des taches de l'utilisateur
-                response.status(300).redirect('/tache.index'); 
+                response.status(300).redirect('/') 
             });
         });
     });

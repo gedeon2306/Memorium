@@ -4,7 +4,7 @@
         <span class="closeAdd">&times;</span>
         <form action="/user.store" method="post" enctype="multipart/form-data">
             <h2>Ajouter un utilisateur</h2>
-            <input type="hidden" value="<%=token %>">
+            <input type="hidden" value="<%=token %>" name="token">
             <div class="photo-upload-container">
                 <label for="photo-upload" class="photo-upload-label" id="photo-upload-label">
                     <span id="upload-text">📷 Cliquez pour ajouter</span>

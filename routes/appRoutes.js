@@ -8,7 +8,7 @@ router.get('/liste',tacheController.liste)
 
 router.get('/ajouter',tacheController.ajouter)
 
-router.get('/payement',tacheController.payement)
+router.get('/paiement',tacheController.paiement)
 
 router.get('/stats',tacheController.stats)
 

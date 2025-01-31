@@ -2,13 +2,13 @@
 <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
     <div class="w3-container w3-row">
         <div class="w3-col s4">
-            <img src="assets/images/user.png" class="w3-circle w3-margin-right" style="width:46px">
+            <img src="<%= actif['photoUser'] === null ? 'assets/images/user.png' : 'assets/images/imagesUsers/'+actif['photoUser'] %>" class="w3-circle w3-margin-right" style="width:50px; height: 50px;">
         </div>
         <div class="w3-col s8 w3-bar">
-            <span>Welcome, <strong>Mike</strong></span><br>
+            <span>Bienvenue, <strong><%=actif['nomUser']%></strong></span><br>
             <abbr title="Notifications"><a href="#" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i></a></abbr>
             <abbr title="Mes informations"><a href="#" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a></abbr>
-            <abbr title="Déconnexion"><a href="#" class="w3-bar-item w3-button"><i class="fa fa-sign-in" style="color: red;"></i></a></abbr>
+            <abbr title="Déconnexion"><a onclick="document.getElementById('modalLogout').style.display='block'" class="w3-bar-item w3-button"><i class="fa fa-sign-in" style="color: red;"></i></a></abbr>
         </div>
     </div>
     <hr>
@@ -22,7 +22,7 @@
         <a href="/liste" class="w3-bar-item w3-button w3-padding <%= actif['liste'] ? 'w3-blue' : '' %>"><i class="fa fa-list fa-fw"></i> Liste</a>
         <a href="/famille.index" class="w3-bar-item w3-button w3-padding <%= actif['famille'] ? 'w3-blue' : '' %>"><i class="fa fa-user-friends fa-fw"></i> Famille</a>
         <a href="/ajouter" class="w3-bar-item w3-button w3-padding <%= actif['ajouter'] ? 'w3-blue' : '' %>"><i class="fa fa-add fa-fw"></i> Ajouter</a>
-        <a href="/payement" class="w3-bar-item w3-button w3-padding <%= actif['payement'] ? 'w3-blue' : '' %>"><i class="fa fa-credit-card"></i> Payement</a>
+        <a href="/paiement" class="w3-bar-item w3-button w3-padding <%= actif['paiement'] ? 'w3-blue' : '' %>"><i class="fa fa-credit-card"></i> Paiement</a>
         <a href="/messages" class="w3-bar-item w3-button w3-padding <%= actif['messages'] ? 'w3-blue' : '' %>"><i class="fa fa-comment fa-fw"></i> Messages</a>
         <a href="/carte" class="w3-bar-item w3-button w3-padding <%= actif['carte'] ? 'w3-blue' : '' %>"><i class="fa fa-map fa-fw"></i> Carte</a>
         <a href="/user.index" class="w3-bar-item w3-button w3-padding <%= actif['utilisateurs'] ? 'w3-blue' : '' %>"><i class="fa fa-users fa-fw"></i> Utilisateurs</a>

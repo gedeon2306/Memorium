@@ -2,17 +2,23 @@ const { request, response } = require('express')
 const uuid = require('uuid')
 
 exports.index = (request, response)=>{
+    if (!request.session.userId) {
+        return response.redirect('/connexion')
+    }
+
     const actif = {
         'accueil' : true,
         'liste' : false,
         'ajouter' : false,
-        'payement' : false,
+        'paiement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
         'carte' : false,
         'history' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     request.getConnection((error, connection) => {
         if (error) {
@@ -49,7 +55,15 @@ exports.index = (request, response)=>{
                                     return response.status(500).render('layout/500', { error })
                                 }
                     
-                                response.status(200).render('layout/index', {actif, trous: resultat[0].trous, users: users[0].users, femmes : genreF[0].femmes, hommes : genreM[0].hommes, adultes : adultes[0].adultes, mineurs : mineurs[0].mineurs})
+                                response.status(200).render('layout/index', {
+                                    actif, 
+                                    trous: resultat[0].trous, 
+                                    users: users[0].users, 
+                                    femmes : genreF[0].femmes, 
+                                    hommes : genreM[0].hommes, 
+                                    adultes : adultes[0].adultes, 
+                                    mineurs : mineurs[0].mineurs
+                                })
                             })
                         })
                     })
@@ -67,13 +81,15 @@ exports.liste = (request, response)=>{
         'accueil' : false,
         'liste' : true,
         'ajouter' : false,
-        'payement' : false,
+        'paiement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
         'carte' : false,
         'historique' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     response.status(200).render('layout/liste', {actif})
 }
@@ -85,31 +101,35 @@ exports.ajouter = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : true,
-        'payement' : false,
+        'paiement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
         'carte' : false,
         'historique' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     response.status(200).render('layout/ajouter', {actif, token})
 }
 
-exports.payement = (request, response)=>{
+exports.paiement = (request, response)=>{
     const actif = {
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'payement' : true,
+        'paiement' : true,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
         'carte' : false,
         'historique' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
-    response.status(200).render('layout/payement', {actif})
+    response.status(200).render('layout/paiement', {actif})
 }
 
 exports.stats = (request, response)=>{
@@ -117,13 +137,15 @@ exports.stats = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'payement' : false,
+        'paiement' : false,
         'utilisateurs' : false,
         'statistique' : true,
         'messages' : false,
         'carte' : false,
         'historique' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     response.status(200).render('layout/stats', {actif})
 }
@@ -133,13 +155,15 @@ exports.messages = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'payement' : false,
+        'paiement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : true,
         'carte' : false,
         'historique' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     response.status(200).render('layout/messages', {actif})
 }
@@ -149,13 +173,15 @@ exports.carte = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'payement' : false,
+        'paiement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
         'carte' : true,
         'historique' : false,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     request.getConnection((error, connection) => {
         if (error) {
@@ -176,31 +202,51 @@ exports.historique = (request, response)=>{
         'accueil' : false,
         'liste' : false,
         'ajouter' : false,
-        'payement' : false,
+        'paiement' : false,
         'utilisateurs' : false,
         'statistique' : false,
         'messages' : false,
         'carte' : false,
         'historique' : true,
         'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
     response.status(200).render('layout/historique', {actif})
 }
 
 exports.login = ('/Connexion', (request, response)=>{
-    response.status(200).render('layout/connexion')
+    
+    request.getConnection((error, connection) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        connection.query('SELECT * FROM users', [], (error, users) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+
+            
+            request.session.token = uuid.v4()
+            let token = request.session.token
+
+            if (users.length === 0) {
+                const titre = 'Créer un compte'
+                response.status(200).render('layout/inscription', {titre, token})
+            } else {
+                const titre = 'Connexion'
+                response.status(200).render('layout/connexion', {titre, token})
+            }
+        })
+    })
 })
 
 exports.logout = ('/logout', (request, response) => {
     // Détruire la session
     request.session.destroy((error) => {
         if (error) {
-            context = {
-                erreur : "Erreur lors de la déconnexion",
-                statut : 500,
-                url : "/tache.index"
-            }
-            return response.status(500).render('layout/erreur');
+            return response.status(500).render('layout/500');
         }
 
         response.redirect('/');

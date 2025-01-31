@@ -1,9 +1,9 @@
 const uuid = require('uuid')
 
 exports.index = (request, response) => {
-    // if (!request.session.userId) {
-    //     return response.redirect('/pageConnexion')
-    // }
+    if (!request.session.userId) {
+        return response.redirect('/pageConnexion')
+    }
 
     const actif = {
         'accueil' : false,
@@ -16,6 +16,8 @@ exports.index = (request, response) => {
         'carte' : false,
         'historique' : false,
         'famille' : true,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
     }
 
     request.session.token = uuid.v4()
