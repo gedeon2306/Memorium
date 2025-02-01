@@ -6,8 +6,9 @@ const session = require('express-session')
 const userRoutes = require('./routes/userRoutes')
 const appRoutes = require('./routes/appRoutes')
 const familleRoutes = require('./routes/familleRoutes')
-const dbConfig = require('./database/database')
+const defuntRoutes = require('./routes/defuntRoutes')
 
+const dbConfig = require('./database/database')
 const app = express()
 const port = 9090
 const domaine = '127.0.0.1'
@@ -30,6 +31,7 @@ app.use(require('./middlewares/flash'))
 app.use('/', userRoutes)
 app.use('/', appRoutes)
 app.use('/', familleRoutes)
+app.use('/', defuntRoutes)
 
 app.use((request, response)=>{
     response.status(404).render('layout/404')

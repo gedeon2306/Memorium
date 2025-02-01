@@ -6,7 +6,7 @@
         
         <%-include('./composants/modalAddFamille') %>
 
-        <form action="#" method="post" class="formAjoutDefunt">
+        <form action="#" method="post" class="formAjoutDefunt" enctype="multipart/form-data">
             <div class="form-content">
                 <div class="formDefunt">
                     <h2>Informations Personnelles</h2>
@@ -23,6 +23,9 @@
 
                     <label for="prenom" class="labelFormAjoutDefunt">Prénom:</label>
                     <input class="inputDefunt" type="text" id="prenom" name="prenom" required>
+
+                    <label for="age" class="labelFormAjoutDefunt">Age:</label>
+                    <input class="inputDefunt" type="number" id="age" name="age" required>
 
                     <label class="labelFormAjoutDefunt">Genre:</label>
                     <div class="radio-group">
@@ -45,7 +48,7 @@
                     <label for="dateInhumation" class="labelFormAjoutDefunt">Date d'Inhumation:</label>
                     <input class="inputDefunt" type="date" id="dateInhumation" name="dateInhumation">
 
-                    <label for="dateInceneration" class="labelFormAjoutDefunt">Date d'Incération:</label>
+                    <label for="dateInceneration" class="labelFormAjoutDefunt">Date d'Incération prevue:</label>
                     <input class="inputDefunt" type="date" id="dateInceneration" name="dateInceneration">
 
                     <label for="famille_id" class="labelFormAjoutDefunt">Famille:</label>

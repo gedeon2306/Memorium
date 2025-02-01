@@ -1,6 +1,5 @@
 const { request, response } = require('express')
 const uuid = require('uuid')
-const checkAuth = require('../config/fonction')
 
 exports.index = (request, response)=>{
 
@@ -90,27 +89,6 @@ exports.liste = (request, response)=>{
         'photoUser' : request.session.photo
     }
     response.status(200).render('layout/liste', {actif})
-}
-
-exports.ajouter = (request, response)=>{
-    request.session.token = uuid.v4()
-    let token = request.session.token
-    const actif = {
-        'accueil' : false,
-        'liste' : false,
-        'ajouter' : true,
-        'paiement' : false,
-        'utilisateurs' : false,
-        'statistique' : false,
-        'messages' : false,
-        'carte' : false,
-        'notes' : false,
-        'historique' : false,
-        'famille' : false,
-        'nomUser' : request.session.nom,
-        'photoUser' : request.session.photo
-    }
-    response.status(200).render('layout/ajouter', {actif, token})
 }
 
 exports.paiement = (request, response)=>{

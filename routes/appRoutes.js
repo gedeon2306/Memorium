@@ -7,8 +7,6 @@ router.get('/', checkAuth, tacheController.index)
 
 router.get('/liste', checkAuth, tacheController.liste)
 
-router.get('/ajouter', checkAuth, tacheController.ajouter)
-
 router.get('/paiement', checkAuth, tacheController.paiement)
 
 router.get('/stats', checkAuth, tacheController.stats)

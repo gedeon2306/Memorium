@@ -1,9 +1,9 @@
 // config/fonction.js
 function checkAuth(request, response, next) {
     if (!request.session.userId) {
-        return response.redirect('/connexion');
+        return response.redirect('/connexion')
     }
-    next();
+    next()
 }
 
-module.exports = checkAuth;
+module.exports = checkAuth
