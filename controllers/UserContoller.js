@@ -1,29 +1,6 @@
 const bcrypt = require('bcrypt')  // Utilisation de bcrypt pour sécuriser les mots de passe
 const uuid = require('uuid')
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-
-// Chemin vers le dossier public/uploads
-const uploadPath = path.join('./public/images/imagesUsers');
-
-// Vérifier et créer le dossier public/uploads s'il n'existe pas
-if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true });
-}
-
-// Configuration de multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadPath) // Dossier où les images seront enregistrées
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-});
-
-const upload = multer({ storage: storage }).single('image') // Champ 'image' dans le formulaire
+const upload = require('../config/upload')
 
 exports.index = (request, response)=>{
 
@@ -62,7 +39,7 @@ exports.index = (request, response)=>{
 }
 
 exports.store = (request, response) => {
-    upload(request, response, (error) => {
+    upload.single('image')(request, response, (error) => {
         if (error) {
             return response.status(500).render('layout/500', { error });
         }
@@ -72,7 +49,7 @@ exports.store = (request, response) => {
         const userName = request.body.userName;
         const passWord = request.body.passWord;
         const role = request.body.role;
-        const imagePath = request.file ? request.file.path.replace(/\\/g, '/').replace('public/images/imagesUsers/', '') : null;
+        const imagePath = request.file ? request.file.filename : null;
 
         bcrypt.hash(passWord, 10, (error, hashedPassword) => {
             if (error) {
@@ -121,17 +98,18 @@ exports.store = (request, response) => {
 
 exports.update = (request, response) => {
 
-    upload(request, response, (error) => {
+    upload.single('image')(request, response, (error) => {
         if (error) {
             return response.status(500).render('layout/500', { error });
         }
 
+        const token = request.body.token;
         const nomComplet = request.body.nomComplet;
         const userName = request.body.userName;
         const passWord = request.body.passWord;
         const role = request.body.role;
         const userId = request.body.id;
-        const imagePath = request.file ? request.file.path.replace(/\\/g, '/').replace('public/images/imagesUsers/', '') : null;
+        const imagePath = request.file ? request.file.filename : null;
 
         // Vérifier l'unicité du `username`
         request.getConnection((error, connection) => {
@@ -185,7 +163,7 @@ exports.update = (request, response) => {
                         params.push(imagePath);
                         
                         // Suppression de l'ancienne image si elle existe
-                        connection.query('SELECT photo FROM users WHERE userId = ?', [userId], (error, results) => {
+                        connection.query('SELECT photo FROM users WHERE id = ?', [userId], (error, results) => {
                             if (error) {
                                 return response.status(500).render('layout/500', { error });
                             }

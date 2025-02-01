@@ -157,7 +157,8 @@
 }
 
 /* Label stylisé */
-.photo-upload-label {
+.photo-upload-label,
+.photo-upload-label-update {
   display: inline-block;
   cursor: pointer;
   width: 180px;
@@ -175,7 +176,8 @@
   transition: border-color 0.3s, background-color 0.3s;
 }
 
-.photo-upload-label:hover {
+.photo-upload-label:hover, 
+.photo-upload-label-update:hover {
   border-color: #888;
   background-color: #f0f0f0;
 }
@@ -187,7 +189,8 @@
 }
 
 /* Masque l'input natif */
-.photo-upload-input {
+.photo-upload-input,
+.photo-upload-input-update {
   display: none;
 }
 
