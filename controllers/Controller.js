@@ -1,10 +1,8 @@
 const { request, response } = require('express')
 const uuid = require('uuid')
+const checkAuth = require('../config/fonction')
 
 exports.index = (request, response)=>{
-    if (!request.session.userId) {
-        return response.redirect('/connexion')
-    }
 
     const actif = {
         'accueil' : true,
@@ -15,6 +13,7 @@ exports.index = (request, response)=>{
         'statistique' : false,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'history' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -74,9 +73,7 @@ exports.index = (request, response)=>{
 }
 
 exports.liste = (request, response)=>{
-    // if (!request.session.userId) {
-    //     return response.redirect('/pageConnexion'); // Si l'utilisateur n'est pas connecté, le rediriger
-    // }
+
     const actif = {
         'accueil' : false,
         'liste' : true,
@@ -86,6 +83,7 @@ exports.liste = (request, response)=>{
         'statistique' : false,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'historique' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -106,6 +104,7 @@ exports.ajouter = (request, response)=>{
         'statistique' : false,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'historique' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -124,6 +123,7 @@ exports.paiement = (request, response)=>{
         'statistique' : false,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'historique' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -142,6 +142,7 @@ exports.stats = (request, response)=>{
         'statistique' : true,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'historique' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -160,6 +161,7 @@ exports.messages = (request, response)=>{
         'statistique' : false,
         'messages' : true,
         'carte' : false,
+        'notes' : false,
         'historique' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -178,6 +180,7 @@ exports.carte = (request, response)=>{
         'statistique' : false,
         'messages' : false,
         'carte' : true,
+        'notes' : false,
         'historique' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -197,6 +200,36 @@ exports.carte = (request, response)=>{
     })
 }
 
+exports.notes = (request, response)=>{
+    const actif = {
+        'accueil' : false,
+        'liste' : false,
+        'ajouter' : false,
+        'paiement' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'notes' : true,
+        'historique' : false,
+        'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
+    }
+    request.getConnection((error, connection) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        connection.query("SELECT place FROM defunts WHERE place IS NOT NULL", [], (error, resultat) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+            response.status(200).render('layout/notes', {actif, resultat})
+        })
+    })
+}
+
 exports.historique = (request, response)=>{
     const actif = {
         'accueil' : false,
@@ -207,6 +240,7 @@ exports.historique = (request, response)=>{
         'statistique' : false,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'historique' : true,
         'famille' : false,
         'nomUser' : request.session.nom,

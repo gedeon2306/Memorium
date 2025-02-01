@@ -1,0 +1,49 @@
+<%- include('./composants/header') %>
+
+<style>
+.notes {
+  margin-bottom: 15px;
+  padding: 4px 12px;
+}
+
+.danger {
+  background-color: #ffdddd;
+  border-left: 6px solid #f44336;
+}
+
+.success {
+  background-color: #ddffdd;
+  border-left: 6px solid #04AA6D;
+}
+
+.info {
+  background-color: #e7f3fe;
+  border-left: 6px solid #2196F3;
+}
+
+
+.warning {
+  background-color: #ffffcc;
+  border-left: 6px solid #ffeb3b;
+}
+</style>
+
+    <section style="margin: 16px;">
+        <h2>Notes</h2>
+        <div class="danger notes">
+            <p><strong>Danger!</strong> Some text...</p>
+        </div>
+
+        <div class="success notes">
+            <p><strong>Success!</strong> Some text...</p>
+        </div>
+
+        <div class="info notes">
+            <p><strong>Info!</strong> Some text...</p>
+        </div>
+
+        <div class="warning notes">
+            <p><strong>Warning!</strong> Some text...</p>
+        </div>
+    </section>
+<%- include('./composants/footer') %>

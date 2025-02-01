@@ -1,9 +1,6 @@
 const uuid = require('uuid')
 
 exports.index = (request, response) => {
-    if (!request.session.userId) {
-        return response.redirect('/pageConnexion')
-    }
 
     const actif = {
         'accueil' : false,
@@ -14,6 +11,7 @@ exports.index = (request, response) => {
         'statistique' : false,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'historique' : false,
         'famille' : true,
         'nomUser' : request.session.nom,
@@ -39,9 +37,6 @@ exports.index = (request, response) => {
 }
 
 exports.store = (request, response) =>{
-    // if (!request.session.userId) {
-    //     return response.redirect('/pageConnexion')
-    // }
 
     const token = request.body.token ? request.body.token : undefined
     const nomFamille = request.body.nomFamille
@@ -103,9 +98,6 @@ exports.store = (request, response) =>{
 }
 
 exports.update = (request, response) =>{
-    // if (!request.session.userId) {
-    //     return response.redirect('/pageConnexion')
-    // }
 
     const token = request.body.token ? request.body.token : undefined
     const id = request.body.id
@@ -166,9 +158,6 @@ exports.update = (request, response) =>{
 }
 
 exports.delete = (request, response) =>{
-    // if (!request.session.userId) {
-    //     return response.redirect('/pageConnexion') // Si l'utilisateur n'est pas connecté, le rediriger
-    // }
     
     const id = request.params.id
     const token = request.params.token ? request.params.token : undefined

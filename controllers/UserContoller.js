@@ -26,9 +26,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single('image') // Champ 'image' dans le formulaire
 
 exports.index = (request, response)=>{
-    if (!request.session.userId) {
-        return response.redirect('/connexion')
-    }
 
     const actif = {
         'accueil' : false,
@@ -39,6 +36,7 @@ exports.index = (request, response)=>{
         'statistique' : false,
         'messages' : false,
         'carte' : false,
+        'notes' : false,
         'historique' : false,
         'famille' : false,
         'nomUser' : request.session.nom,
@@ -122,9 +120,6 @@ exports.store = (request, response) => {
 };
 
 exports.update = (request, response) => {
-    if (!request.session.userId) {
-        return response.redirect('/connexion')
-    }
 
     upload(request, response, (error) => {
         if (error) {
@@ -274,10 +269,7 @@ exports.login = (request, response) => {
 };
 
 exports.delete = (request, response) =>{
-    // if (!request.session.userId) {
-    //     return response.redirect('/pageConnexion') // Si l'utilisateur n'est pas connecté, le rediriger
-    // }
-    
+
     const id = request.params.id
     const token = request.params.token ? request.params.token : undefined
 
