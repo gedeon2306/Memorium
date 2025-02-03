@@ -18,97 +18,100 @@
             <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Effectuez une recherche...">
         </div>
 
-        <div style="overflow-x:auto;">
-            <table id="myTable" class="w3-table w3-striped w3-white"">
-                <tr class="header">
-                    <th>N°</th>
-                    <th>Famille</th>
-                    <th>Nom Garrant</th>
-                    <th>Prenom Garrant</th>
-                    <th>Profession</th>
-                    <th>Telephone</th>
-                    <th>Email</th>
-                    <th>Action</th>
-                </tr>
-                <% if (familles.length === 0) { %>
-                    <tr>
-                        <td colspan="8" style="text-align: center;">Aucun enregistrement disponible</td>
+        <div class="table">
+            <table id="myTable">
+                <thead>
+                    <tr class="header">
+                        <th>N°</th>
+                        <th>Famille</th>
+                        <th>Nom_Garrant</th>
+                        <th>Prenom_Garrant</th>
+                        <th>Profession</th>
+                        <th>Telephone</th>
+                        <th>Email</th>
+                        <th>Action</th>
                     </tr>
-                <% }else{ %>
-                    <% let num = 0; familles.forEach(famille => { %>
+                </thead>
+                <tbody>
+                    <% if (familles.length === 0) { %>
                         <tr>
-                            <td><%=num+=1 %></td>
-                            <td><%=famille.nomFamille %></td>
-                            <td><%=famille.nomGarrant %></td>
-                            <td><%=famille.prenomGarrant %></td>
-                            <td><%=famille.profession %></td>
-                            <td><%=famille.telephone %></td>
-                            <td><%=famille.email %></td>
-                            <td>
-                                <button class="btn btn-vert openModalBtn" data-modal="modal<%=num %>"><i class="fa fa-edit fa-fw"></i></button>
-                                <button class="btn btn-rouge openModalDeleteBtn" data-modal="modalDelete<%=num %>"><i class="far fa-trash-alt fa-fw"></i></button>
-                            </td>
+                            <td colspan="8" style="text-align: center;">Aucun enregistrement disponible</td>
                         </tr>
-                        <!-- Modification -->
-                        <div id="modal<%=num %>" class="modal">
-                            <div class="modal-content animate-modal">
-                                <span class="close" data-modal="modal<%=num %>">&times;</span>
-                                <form action="/famille.update" method="post">
-                                    <h2>Modifier la famille <%=famille.nomFamille %></h2>
-                                    <input type="hidden" name="token" value="<%=token %>">
-                                    <input type="hidden" name="id" value="<%=famille.id %>">
-                                    <div class="input-container">
-                                        <i class="fa fa-font icon"></i>
-                                        <input class="input-field" type="text" placeholder="Nom de la famille" name="nomFamille" value="<%=famille.nomFamille %>" required>
-                                    </div>
-                        
-                                    <div class="input-container">
-                                        <i class="fa fa-font icon"></i>
-                                        <input class="input-field" type="text" placeholder="Nom du garrant" name="nomGarrant" value="<%=famille.nomGarrant %>" required>
-                                    </div>
-                        
-                                    <div class="input-container">
-                                        <i class="fa fa-font icon"></i>
-                                        <input class="input-field" type="text" placeholder="Prénom du garrant" name="prenomGarrant" value="<%=famille.prenomGarrant %>" required>
-                                    </div>
-                        
-                                    <div class="input-container">
-                                        <i class="fa fa-gears icon"></i>
-                                        <input class="input-field" type="text" placeholder="Profession" name="profession" value="<%=famille.profession %>" required>
-                                    </div>
-                        
-                                    <div class="input-container">
-                                        <i class="icon">#</i>
-                                        <input class="input-field" type="text" placeholder="Téléphone" name="telephone" value="<%=famille.telephone %>" required>
-                                    </div>
-                        
-                                    <div class="input-container">
-                                        <i class="icon">@</i>
-                                        <input class="input-field" type="email" placeholder="Email" name="email" value="<%=famille.email %>" required>
-                                    </div>
-                        
-                                    <button type="submit" class="btnModal">Enregistrer <i class="fa fa-save"></i></button>
-                                </form>
+                    <% }else{ %>
+                        <% let num = 0; familles.forEach(famille => { %>
+                            <tr>
+                                <td><%=num+=1 %></td>
+                                <td><%=famille.nomFamille %></td>
+                                <td><%=famille.nomGarrant %></td>
+                                <td><%=famille.prenomGarrant %></td>
+                                <td><%=famille.profession %></td>
+                                <td><%=famille.telephone %></td>
+                                <td><%=famille.email %></td>
+                                <td>
+                                    <button class="btn btn-vert openModalBtn" data-modal="modal<%=num %>"><i class="fa fa-edit fa-fw"></i></button>
+                                    <button class="btn btn-rouge openModalDeleteBtn" data-modal="modalDelete<%=num %>"><i class="far fa-trash-alt fa-fw"></i></button>
+                                </td>
+                            </tr>
+                            <!-- Modification -->
+                            <div id="modal<%=num %>" class="modal">
+                                <div class="modal-content animate-modal">
+                                    <span class="close" data-modal="modal<%=num %>">&times;</span>
+                                    <form action="/famille.update" method="post">
+                                        <h2>Modifier la famille <%=famille.nomFamille %></h2>
+                                        <input type="hidden" name="token" value="<%=token %>">
+                                        <input type="hidden" name="id" value="<%=famille.id %>">
+                                        <div class="input-container">
+                                            <i class="fa fa-font icon"></i>
+                                            <input class="input-field" type="text" placeholder="Nom de la famille" name="nomFamille" value="<%=famille.nomFamille %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-font icon"></i>
+                                            <input class="input-field" type="text" placeholder="Nom du garrant" name="nomGarrant" value="<%=famille.nomGarrant %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-font icon"></i>
+                                            <input class="input-field" type="text" placeholder="Prénom du garrant" name="prenomGarrant" value="<%=famille.prenomGarrant %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-gears icon"></i>
+                                            <input class="input-field" type="text" placeholder="Profession" name="profession" value="<%=famille.profession %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="icon">#</i>
+                                            <input class="input-field" type="text" placeholder="Téléphone" name="telephone" value="<%=famille.telephone %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="icon">@</i>
+                                            <input class="input-field" type="email" placeholder="Email" name="email" value="<%=famille.email %>" required>
+                                        </div>
+                            
+                                        <button type="submit" class="btnModal">Enregistrer <i class="fa fa-save"></i></button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                        <!-- Suppression -->
-                        <div id="modalDelete<%=num %>" class="modal">
-                            <div class="modal-content animate-modal delete">
-                                <span class="close" data-modal="modalDelete<%=num %>">×</span>
-                                <form action="/famille.delete/<%=famille.id%>/<%=token %>" method="get">
-                                    <h1 class="deleteHeader">Supprimer la famille <%=famille.nomFamille %></h1>
-                                    <!-- <input type="hidden" name="token" value=""> -->
-                                    <p class="deleteContaine">Êtes-vous sûr de vouloir supprimer la famille <%=famille.nomFamille %> ?</p>
-                                    
-                                    <div class="clearfix">
-                                        <button type="button" class="cancelbtn closeBtn" data-modal="modalDelete<%=num %>">Annuler</button>
-                                        <button type="submit" class="deletebtn">Supprimer</button>
-                                    </div>
-                                </form>
+                            <!-- Suppression -->
+                            <div id="modalDelete<%=num %>" class="modal">
+                                <div class="modal-content animate-modal delete">
+                                    <span class="close" data-modal="modalDelete<%=num %>">×</span>
+                                    <form action="/famille.delete/<%=famille.id%>/<%=token %>" method="get">
+                                        <h1 class="deleteHeader">Supprimer la famille <%=famille.nomFamille %></h1>
+                                        <p class="deleteContaine">Êtes-vous sûr de vouloir supprimer la famille <%=famille.nomFamille %> ?</p>
+                                        
+                                        <div class="clearfix">
+                                            <button type="button" class="cancelbtn closeBtn" data-modal="modalDelete<%=num %>">Annuler</button>
+                                            <button type="submit" class="deletebtn">Supprimer</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    <% }) %>
-                <% } %>
+                        <% }) %>
+                    <% } %>
+                </tbody>
             </table>
         </div>
     </section>

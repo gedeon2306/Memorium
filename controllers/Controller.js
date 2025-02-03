@@ -71,25 +71,6 @@ exports.index = (request, response)=>{
     })
 }
 
-exports.paiement = (request, response)=>{
-    const actif = {
-        'accueil' : false,
-        'liste' : false,
-        'ajouter' : false,
-        'paiement' : true,
-        'utilisateurs' : false,
-        'statistique' : false,
-        'messages' : false,
-        'carte' : false,
-        'notes' : false,
-        'historique' : false,
-        'famille' : false,
-        'nomUser' : request.session.nom,
-        'photoUser' : request.session.photo
-    }
-    response.status(200).render('layout/paiement', {actif})
-}
-
 exports.stats = (request, response)=>{
     const actif = {
         'accueil' : false,

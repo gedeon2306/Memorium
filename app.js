@@ -8,6 +8,7 @@ const appRoutes = require('./routes/appRoutes')
 const familleRoutes = require('./routes/familleRoutes')
 const defuntRoutes = require('./routes/defuntRoutes')
 const messageRoutes = require('./routes/messageRoutes')
+const paiementRoutes = require('./routes/paiementRoutes')
 
 const dbConfig = require('./database/database')
 const app = express()
@@ -34,6 +35,7 @@ app.use('/', appRoutes)
 app.use('/', familleRoutes)
 app.use('/', defuntRoutes)
 app.use('/', messageRoutes)
+app.use('/', paiementRoutes)
 
 app.use((request, response)=>{
     response.status(404).render('layout/404')

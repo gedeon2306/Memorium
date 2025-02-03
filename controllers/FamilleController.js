@@ -67,7 +67,7 @@ exports.store = (request, response) =>{
             }
 
             if (results.length > 0) {
-                request.flash('error', "email déjà utilisé")
+                request.flash('error', "Email déjà utilisé")
                 return response.status(400).redirect('/famille.index')
             }
 
@@ -100,7 +100,7 @@ exports.store = (request, response) =>{
 exports.update = (request, response) =>{
 
     const token = request.body.token ? request.body.token : undefined
-    const id = request.body.id
+    const id = request.body.id ? request.body.id : undefined
     const nomFamille = request.body.nomFamille
     const nomGarrant = request.body.nomGarrant
     const prenomGarrant = request.body.prenomGarrant
@@ -129,7 +129,7 @@ exports.update = (request, response) =>{
             }
 
             if (results.length > 0) {
-                request.flash('error', "email déjà utilisé")
+                request.flash('error', "Email déjà utilisé")
                 return response.status(400).redirect('/famille.index')
             }
 
@@ -159,7 +159,7 @@ exports.update = (request, response) =>{
 
 exports.delete = (request, response) =>{
     
-    const id = request.params.id
+    const id = request.params.id ? request.params.id : undefined
     const token = request.params.token ? request.params.token : undefined
 
     request.getConnection((error, connection)=>{
@@ -168,7 +168,7 @@ exports.delete = (request, response) =>{
         }
 
         if (token!=request.session.token || token === undefined || token === '' ) {
-            request.flash('error', "token invalide")
+            request.flash('error', "Token invalide")
             return response.status(400).redirect('/famille.index')
         }
 

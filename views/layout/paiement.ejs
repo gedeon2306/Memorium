@@ -1,5 +1,130 @@
 <%-include("./composants/header") %>
+    <section style="padding: 20px;">
+        <h2><b><i class="fa fa-user-friends fa-fw"></i> Gestion des Paiements</b></h2>
 
-    
+        <!-- Ouverture du model -->
+        <button id="myBtn" class="btn btn-bleu">Nouveau <i class="fa fa-circle-plus fa-lg"></i></button>
+        
+        <!-- Les alerts -->
+        <%-include('./composants/alerts') %>
+
+        <!-- Le model -->
+        <%-include('./composants/modalAddPaiement') %>
+        
+    </section>
+    <section style="padding: 16px;">
+        <div class="input-container">
+            <i class="fa fa-search icon"></i>
+            <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Effectuez une recherche...">
+        </div>
+        <div class="table">
+            <table id="myTable">
+                <thead>
+                    <tr class="header">
+                        <th>#</th>
+                        <th>N°Facture</th>
+                        <th>Montant</th>
+                        <th>Incineration_Prevue</th>
+                        <th>Date_Paiement</th>
+                        <th>Moyen_Paiement</th>
+                        <th>Famille</th>
+                        <th>Défunt</th>
+                        <th>Utilisateur</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (paiements.length === 0) { %>
+                        <tr>
+                            <td colspan="8" style="text-align: center;">Aucun enregistrement disponible</td>
+                        </tr>
+                    <% }else{ %>
+                        <% let num = 0; paiements.forEach(paiement => { %>
+                            <tr>
+                                <td><%=num+=1 %></td>
+                                <td><%=paiement.numFacture %></td>
+                                <td><%=paiement.montant %><strong style="color: green;">FCFA</strong></td>
+                                <td><%=moment(paiement.dateIncinerationPrevue).format('D/MM/YYYY') %></td>
+                                <td><%=moment(paiement.datePaiement).format('D/MM/YYYY HH:mm')  %></td>
+                                <td><%=paiement.moyenPaiement %></td>
+                                <td><%=paiement.nomFamille %></td>
+                                <td><%=paiement.nom %></td>
+                                <td><%=paiement.nomComplet %></td>
+                                <td>
+                                    <button class="btn btn-vert openModalBtn" data-modal="modal<%=num %>"><i class="fa fa-edit fa-fw"></i></button>
+                                    <button class="btn btn-rouge openModalDeleteBtn" data-modal="modalDelete<%=num %>"><i class="far fa-trash-alt fa-fw"></i></button>
+                                    <button class="btn btn-bleu"><i class="fa fa-print fa-fw"></i></button>
+                                </td>
+                            </tr>
+                            <div id="modal<%=num %>" class="modal">
+                                <div class="modal-content animate-modal">
+                                    <span class="close" data-modal="modal<%=num %>">&times;</span>
+                                    <form action="/paiement.update" method="post">
+                                        <h2>Modifier la facture <%=paiement.numFacture %></h2>
+                                        <input type="hidden" name="token" value="<%=token %>">
+                                        <input type="hidden" name="id" value="<%=paiement.id %>">
+                                        <div class="input-container">
+                                            <i class="icon">123</i>
+                                            <input class="input-field" type="number" placeholder="Le montant" name="montant" value="<%=paiement.montant %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-calendar icon"></i>
+                                            <input class="input-field" type="date" placeholder="La date d'Incineration Prevue" name="dateIncinerationPrevue" value="<%=moment(paiement.dateIncinerationPrevue).format('YYYY-MM-DD') %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-credit-card icon"></i>
+                                            <select class="input-field" name="moyenPaiement" id="moyenPaiement" required>
+                                                <option value="Espèce" <%= paiement.moyenPaiement === 'Espèce' ? 'selected' : '' %>>Espèce</option>
+                                                <option value="Carte" <%= paiement.moyenPaiement === 'Carte' ? 'selected' : '' %>>Carte</option>
+                                                <option value="Chèque" <%= paiement.moyenPaiement === 'Chèque' ? 'selected' : '' %>>Chèque</option>
+                                                <option value="Paiement Mobile" <%= paiement.moyenPaiement === 'Paiement Mobile' ? 'selected' : '' %>>Paiement Mobile</option>
+                                                <option value="Virement Bancaire" <%= paiement.moyenPaiement === 'Virement Bancaire' ? 'selected' : '' %>>Virement Bancaire</option>
+                                            </select>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-user-friends icon"></i>
+                                            <select class="input-field" name="familleId" id="familleId" required>
+                                                <% familles.forEach(famille => { %>
+                                                    <option value="<%= famille.id %>" <%= paiement.famille_id === famille.id ? 'selected' : '' %> ><%= famille.nomFamille + ' (' + famille.nomGarrant + ' ' + famille.prenomGarrant + ')' %></option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-user icon"></i>
+                                            <select class="input-field" name="defuntId" id="defuntId" required>
+                                                <% defunts.forEach(defunt => { %>
+                                                    <option value="<%= defunt.id %>" <%= paiement.defunt_id === defunt.id ? 'selected' : '' %> ><%= defunt.nom + ' ' + defunt.prenom %></option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                            
+                                        <button type="submit" class="btnModal">Enregistrer <i class="fa fa-save"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="modalDelete<%=num %>" class="modal">
+                                <div class="modal-content animate-modal delete">
+                                    <span class="close" data-modal="modalDelete<%=num %>">×</span>
+                                    <form action="/paiement.delete/<%=paiement.id%>/<%=token %>" method="get">
+                                        <h1 class="deleteHeader">Supprimer la facture <%=paiement.numFacture %></h1>
+                                        <p class="deleteContaine">Êtes-vous sûr de vouloir supprimer la facture <%=paiement.numFacture %> ?</p>
+                                        
+                                        <div class="clearfix">
+                                            <button type="button" class="cancelbtn closeBtn" data-modal="modalDelete<%=num %>">Annuler</button>
+                                            <button type="submit" class="deletebtn">Supprimer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </section>
         
 <%-include("./composants/footer") %>

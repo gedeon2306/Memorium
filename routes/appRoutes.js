@@ -6,8 +6,6 @@ const isAdmin = require('../middlewares/checkRole')
 
 router.get('/', checkAuth, controller.index)
 
-router.get('/paiement', checkAuth, controller.paiement)
-
 router.get('/stats', checkAuth, isAdmin, controller.stats)
 
 router.get('/carte', checkAuth, controller.carte)

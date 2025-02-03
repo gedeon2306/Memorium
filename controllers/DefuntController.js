@@ -2,7 +2,7 @@ const { request, response } = require('express')
 const upload = require('../config/uploadDefunt')
 const { nombreRandom } = require('../config/genereNombre')
 const uuid = require('uuid')
-const generateNumFacture = require('../config/genereNumFacture');
+const generateNumFacture = require('../config/genereNumFacture')
 
 exports.liste = (request, response)=>{
 
@@ -135,9 +135,9 @@ exports.store = (request, response) => {
                                 }
             
                                 // Insérer le paiement
-                                const paiementQuery = `INSERT INTO paiements (numFacture, montant, dateIncinerationPrevue, moyenPaiement, famille_id, defunt_id) VALUES (?, ?, ?, ?, ?, ?)`;
+                                const paiementQuery = `INSERT INTO paiements (numFacture, montant, dateIncinerationPrevue, moyenPaiement, famille_id, defunt_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)`;
                                 
-                                connection.query(paiementQuery, [numFacture, montant, dateInceneration, moyenPaiement, familleId, defuntId], (error, paiementResults) => {
+                                connection.query(paiementQuery, [numFacture, montant, dateInceneration, moyenPaiement, familleId, defuntId, request.session.userId], (error, paiementResults) => {
                                     if (error) {
                                         return response.status(500).render('layout/500', { error });
                                     }

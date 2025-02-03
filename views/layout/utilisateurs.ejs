@@ -19,92 +19,98 @@
             <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Effectuez une recherche...">
         </div>
 
-        <table id="myTable" class="w3-table w3-striped w3-white">
-            <tr class="header">
-                <th>N°</th>
-                <th>Photo</th>
-                <th>Nom complet</th>
-                <th>Nom d'utilisateur</th>
-                <th>Rôle</th>
-                <th>Action</th>
-            </tr>
-            <% if (users.length === 0) { %>
-                <tr>
-                    <td colspan="8" style="text-align: center;">Aucun enregistrement disponible</td>
-                </tr>
-            <% }else{ %>
-                <% let num = 0; users.forEach(user => { %>
-                    <tr>
-                        <td><%=num+=1 %></td>
-                        <td><img class="w3-circle" src="<%= user.photo === null ? 'assets/images/user.png' : 'assets/images/imagesUsers/'+user.photo %>" alt="imgUser" style="width: 50px; height: auto;"></td>
-                        <td><%=user.nomComplet %></td>
-                        <td><%=user.userName %></td>
-                        <td><%=user.role %></td>
-                        <td>
-                            <button class="btn btn-vert openModalBtn" data-modal="modal<%=num %>"><i class="fa fa-edit fa-fw"></i></button>
-                            <button class="btn btn-rouge openModalDeleteBtn" data-modal="modalDelete<%=num %>"><i class="far fa-trash-alt fa-fw"></i></button>
-                        </td>
+        <div class="table">
+            <table id="myTable">
+                <thead>
+                    <tr class="header">
+                        <th>N°</th>
+                        <th>Photo</th>
+                        <th>Nom complet</th>
+                        <th>Nom d'utilisateur</th>
+                        <th>Rôle</th>
+                        <th>Action</th>
                     </tr>
-                    <!-- Modification -->
-                    <div id="modal<%=num %>" class="modal">
-                        <div class="modal-content animate-modal">
-                            <span class="close" data-modal="modal<%=num %>">&times;</span>
-                            <form action="/user.update" method="post" enctype="multipart/form-data">
-                                <h2>Modifier l'utilisateur <%=user.nomComplet %></h2>
-                                <input type="hidden" name="token" value="<%=token %>">
-                                <input type="hidden" name="id" value="<%=user.id %>">
-                                <div class="photo-upload-container">
-                                    <label for="photo-upload-update" class="photo-upload-label-update" id="photo-upload-label-update">
-                                        <span id="upload-text-update">📷 Cliquez pour ajouter</span>
-                                        <input type="file" id="photo-upload-update" accept="image/*" class="photo-upload-input-update" name="image">
-                                    </label>
+                </thead>
+                <tbody>
+                    <% if (users.length === 0) { %>
+                        <tr>
+                            <td colspan="8" style="text-align: center;">Aucun enregistrement disponible</td>
+                        </tr>
+                    <% }else{ %>
+                        <% let num = 0; users.forEach(user => { %>
+                            <tr>
+                                <td><%=num+=1 %></td>
+                                <td><img class="w3-circle" src="<%= user.photo === null ? 'assets/images/user.png' : 'assets/images/imagesUsers/'+user.photo %>" alt="imgUser" style="width: 50px; height: auto;"></td>
+                                <td><%=user.nomComplet %></td>
+                                <td><%=user.userName %></td>
+                                <td><%=user.role %></td>
+                                <td>
+                                    <button class="btn btn-vert openModalBtn" data-modal="modal<%=num %>"><i class="fa fa-edit fa-fw"></i></button>
+                                    <button class="btn btn-rouge openModalDeleteBtn" data-modal="modalDelete<%=num %>"><i class="far fa-trash-alt fa-fw"></i></button>
+                                </td>
+                            </tr>
+                            <!-- Modification -->
+                            <div id="modal<%=num %>" class="modal">
+                                <div class="modal-content animate-modal">
+                                    <span class="close" data-modal="modal<%=num %>">&times;</span>
+                                    <form action="/user.update" method="post" enctype="multipart/form-data">
+                                        <h2>Modifier l'utilisateur <%=user.nomComplet %></h2>
+                                        <input type="hidden" name="token" value="<%=token %>">
+                                        <input type="hidden" name="id" value="<%=user.id %>">
+                                        <div class="photo-upload-container">
+                                            <label for="photo-upload-update" class="photo-upload-label-update" id="photo-upload-label-update">
+                                                <span id="upload-text-update">📷 Cliquez pour ajouter</span>
+                                                <input type="file" id="photo-upload-update" accept="image/*" class="photo-upload-input-update" name="image">
+                                            </label>
+                                        </div>
+                                        <br>
+                                        <div class="input-container">
+                                            <i class="fa fa-font icon"></i>
+                                            <input class="input-field" type="text" placeholder="Nom complet" name="nomComplet" value="<%=user.nomComplet %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-user icon"></i>
+                                            <input class="input-field" type="text" placeholder="Username" name="userName" value="<%=user.userName %>" required>
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-key icon"></i>
+                                            <input class="input-field" type="password" placeholder="Password" name="passWord">
+                                        </div>
+                            
+                                        <div class="input-container">
+                                            <i class="fa fa-tasks icon"></i>
+                                            <select name="role" id="" class="input-field" required>
+                                                <option value="Administrateur" <%=user.role === 'Administrateur' ? 'selected' : '' %>>Administrateur</option>
+                                                <option value="Stagière" <%=user.role === 'Stagièrec' ? 'selected' : '' %>>Stagière</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btnModal">Enregistrer <i class="fa fa-save"></i></button>
+                                    </form>
                                 </div>
-                                <br>
-                                <div class="input-container">
-                                    <i class="fa fa-font icon"></i>
-                                    <input class="input-field" type="text" placeholder="Nom complet" name="nomComplet" value="<%=user.nomComplet %>" required>
+                            </div>
+                            <!-- Suppression -->
+                            <div id="modalDelete<%=num %>" class="modal">
+                                <div class="modal-content animate-modal delete">
+                                    <span class="close" data-modal="modalDelete<%=num %>">×</span>
+                                    <form action="/user.delete/<%=user.id%>/<%=token %>" method="get">
+                                        <h1 class="deleteHeader">Supprimer l'utilisateur' <%=user.nomComplet %></h1>
+                                        <!-- <input type="hidden" name="token" value=""> -->
+                                        <p class="deleteContaine">Êtes-vous sûr de vouloir supprimer l'utilisateur <%=user.nomComplet %> ?</p>
+                                        
+                                        <div class="clearfix">
+                                            <button type="button" class="cancelbtn closeBtn" data-modal="modalDelete<%=num %>">Annuler</button>
+                                            <button type="submit" class="deletebtn">Supprimer</button>
+                                        </div>
+                                    </form>
                                 </div>
-                    
-                                <div class="input-container">
-                                    <i class="fa fa-user icon"></i>
-                                    <input class="input-field" type="text" placeholder="Username" name="userName" value="<%=user.userName %>" required>
-                                </div>
-                    
-                                <div class="input-container">
-                                    <i class="fa fa-key icon"></i>
-                                    <input class="input-field" type="password" placeholder="Password" name="passWord">
-                                </div>
-                    
-                                <div class="input-container">
-                                    <i class="fa fa-tasks icon"></i>
-                                    <select name="role" id="" class="input-field" required>
-                                        <option value="Administrateur" <%=user.role === 'Administrateur' ? 'selected' : '' %>>Administrateur</option>
-                                        <option value="Stagière" <%=user.role === 'Stagièrec' ? 'selected' : '' %>>Stagière</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btnModal">Enregistrer <i class="fa fa-save"></i></button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- Suppression -->
-                    <div id="modalDelete<%=num %>" class="modal">
-                        <div class="modal-content animate-modal delete">
-                            <span class="close" data-modal="modalDelete<%=num %>">×</span>
-                            <form action="/user.delete/<%=user.id%>/<%=token %>" method="get">
-                                <h1 class="deleteHeader">Supprimer l'utilisateur' <%=user.nomComplet %></h1>
-                                <!-- <input type="hidden" name="token" value=""> -->
-                                <p class="deleteContaine">Êtes-vous sûr de vouloir supprimer l'utilisateur <%=user.nomComplet %> ?</p>
-                                
-                                <div class="clearfix">
-                                    <button type="button" class="cancelbtn closeBtn" data-modal="modalDelete<%=num %>">Annuler</button>
-                                    <button type="submit" class="deletebtn">Supprimer</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                <% }) %>
-            <% } %>
-        </table>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
     </section>
 
 <%-include("./composants/footer") %>
