@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="assets/css/modal.css">
     <link rel="stylesheet" href="assets/css/carte.css">
     <link rel="stylesheet" href="assets/css/formulaireAjouterDefunt.css">
+    
+    <script src="assets/js/sweetAlert.js"></script>
 </head>
 
 <body class="w3-light-grey">
@@ -46,3 +48,14 @@
                 </div>
             </div>
         </div>
+
+        <% if (locals.flash && locals.flash.errorAcces) { %>
+            <script>
+                Swal.fire({
+                    icon: "error",
+                    title: "Erreur",
+                    text: "<%=flash.errorAcces%>",
+                });
+            </script>
+        <% } %>
+        <%  %>

@@ -1,26 +1,23 @@
 const express = require('express')
 const router = express.Router()
-const tacheController = require('../controllers/Controller')
-const checkAuth = require('../config/fonction');
+const controller = require('../controllers/Controller')
+const checkAuth = require('../config/fonction')
+const isAdmin = require('../middlewares/checkRole')
 
-router.get('/', checkAuth, tacheController.index)
+router.get('/', checkAuth, controller.index)
 
-router.get('/liste', checkAuth, tacheController.liste)
+router.get('/paiement', checkAuth, controller.paiement)
 
-router.get('/paiement', checkAuth, tacheController.paiement)
+router.get('/stats', checkAuth, isAdmin, controller.stats)
 
-router.get('/stats', checkAuth, tacheController.stats)
+router.get('/carte', checkAuth, controller.carte)
 
-router.get('/messages', checkAuth, tacheController.messages)
+router.get('/notes', checkAuth, controller.notes)
 
-router.get('/carte', checkAuth, tacheController.carte)
+router.get('/historique', checkAuth, isAdmin, controller.historique)
 
-router.get('/notes', checkAuth, tacheController.notes)
+router.get('/connexion', controller.login)
 
-router.get('/historique', checkAuth, tacheController.historique)
-
-router.get('/connexion', tacheController.login)
-
-router.get('/logout', tacheController.logout)
+router.get('/logout', controller.logout)
 
 module.exports = router

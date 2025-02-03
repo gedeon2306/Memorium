@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes')
 const appRoutes = require('./routes/appRoutes')
 const familleRoutes = require('./routes/familleRoutes')
 const defuntRoutes = require('./routes/defuntRoutes')
+const messageRoutes = require('./routes/messageRoutes')
 
 const dbConfig = require('./database/database')
 const app = express()
@@ -32,6 +33,7 @@ app.use('/', userRoutes)
 app.use('/', appRoutes)
 app.use('/', familleRoutes)
 app.use('/', defuntRoutes)
+app.use('/', messageRoutes)
 
 app.use((request, response)=>{
     response.status(404).render('layout/404')

@@ -5,35 +5,38 @@
         <button id="myBtn" class="btn btn-bleu addFamille">Ajouter une famille <i class="fa fa-circle-plus fa-lg"></i></button>
         
         <%-include('./composants/modalAddFamille') %>
+        <%-include('./composants/alerts') %>
 
-        <form action="#" method="post" class="formAjoutDefunt" enctype="multipart/form-data">
+        <form action="/defunt.store" method="post" class="formAjoutDefunt" enctype="multipart/form-data">
             <div class="form-content">
                 <div class="formDefunt">
                     <h2>Informations Personnelles</h2>
 
+                    <input type="hidden" name="token" value="<%=token %>">
+
                     <div class="photo-upload-container">
                         <label for="photo-upload" class="photo-upload-label" id="photo-upload-label">
                         <span id="upload-text">📷 Cliquez pour ajouter</span>
-                        <input type="file" id="photo-upload" accept="image/*" class="photo-upload-input" />
+                        <input type="file" id="photo-upload" accept="image/*" class="photo-upload-input" name="image">
                         </label>
                     </div>
 
-                    <label for="nom" class="labelFormAjoutDefunt">Nom:</label>
+                    <label for="nom" class="labelFormAjoutDefunt"><span class="importance">* </span>Nom:</label>
                     <input class="inputDefunt" type="text" id="nom" name="nom" required>
 
                     <label for="prenom" class="labelFormAjoutDefunt">Prénom:</label>
-                    <input class="inputDefunt" type="text" id="prenom" name="prenom" required>
+                    <input class="inputDefunt" type="text" id="prenom" name="prenom">
 
-                    <label for="age" class="labelFormAjoutDefunt">Age:</label>
+                    <label for="age" class="labelFormAjoutDefunt"><span class="importance">* </span>Age:</label>
                     <input class="inputDefunt" type="number" id="age" name="age" required>
 
-                    <label class="labelFormAjoutDefunt">Genre:</label>
+                    <label class="labelFormAjoutDefunt"><span class="importance">* </span>Genre:</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="genre" value="Masculin" required> Masculin</label>
-                        <label><input type="radio" name="genre" value="Féminin" required> Féminin</label>
+                        <label><input type="radio" name="genre" value="M" required> Masculin</label>
+                        <label><input type="radio" name="genre" value="F" required> Féminin</label>
                     </div>
 
-                    <label for="dateNaiss" class="labelFormAjoutDefunt">Date de Naissance:</label>
+                    <label for="dateNaiss" class="labelFormAjoutDefunt"><span class="importance">* </span>Date de Naissance:</label>
                     <input class="inputDefunt" type="date" id="dateNaiss" name="dateNaiss">
 
                     <label for="profession" class="labelFormAjoutDefunt">Profession:</label>
@@ -42,18 +45,34 @@
 
                 <div class="formDefunt">
                     <h2>Autres Informations</h2>
-                    <label for="dateDeces" class="labelFormAjoutDefunt">Date de Décès:</label>
-                    <input class="inputDefunt" type="date" id="dateDeces" name="dateDeces">
+                    <label for="dateDeces" class="labelFormAjoutDefunt"><span class="importance">* </span>Date de Décès:</label>
+                    <input class="inputDefunt" type="date" id="dateDeces" name="dateDeces" required>
 
-                    <label for="dateInhumation" class="labelFormAjoutDefunt">Date d'Inhumation:</label>
-                    <input class="inputDefunt" type="date" id="dateInhumation" name="dateInhumation">
+                    <label for="dateInhumation" class="labelFormAjoutDefunt"><span class="importance">* </span>Date d'Inhumation:</label>
+                    <input class="inputDefunt" type="date" id="dateInhumation" name="dateInhumation" required>
 
-                    <label for="dateInceneration" class="labelFormAjoutDefunt">Date d'Incération prevue:</label>
-                    <input class="inputDefunt" type="date" id="dateInceneration" name="dateInceneration">
+                    <label for="dateInceneration" class="labelFormAjoutDefunt"><span class="importance">* </span>Date d'Incération prevue:</label>
+                    <input class="inputDefunt" type="date" id="dateInceneration" name="dateInceneration" required>
 
-                    <label for="famille_id" class="labelFormAjoutDefunt">Famille:</label>
-                    <select class="inputDefunt" name="famille_id" id="famille_id">
-                        <option value=""></option>
+                    <label for="familleId" class="labelFormAjoutDefunt"><span class="importance">* </span>Famille (NomGarrant PrénomGarrant):</label>
+                    <select class="inputDefunt" name="familleId" id="familleId">
+                        <option value="" selected disabled></option>
+                        <% familles.forEach(famille => { %>
+                            <option value="<%= famille.id %>"><%= famille.nomFamille + ' (' + famille.nomGarrant + ' ' + famille.prenomGarrant + ')' %></option>
+                        <% }) %>
+                    </select>
+
+                    <h2>Paiement</h2>
+
+                    <label for="montant" class="labelFormAjoutDefunt"><span class="importance">* </span>Montant:</label>
+                    <input class="inputDefunt" type="number" id="montant" name="montant" required>
+
+                    <label for="moyenPaiement" class="labelFormAjoutDefunt"><span class="importance">* </span>Paiement par:</label>
+                    <select class="inputDefunt" name="moyenPaiement" id="moyenPaiement">
+                        <option value="Espèce" selected>Espèce</option>
+                        <option value="Carte">Carte</option>
+                        <option value="Chèque">Chèque</option>
+                        <option value="Virement Bancaire">Virement Bancaire</option>
                     </select>
                 </div>
             </div>

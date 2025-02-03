@@ -9,36 +9,22 @@
                 <i class="fa fa-search icon"></i>
                 <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
             </div>
-            <div class="w3-row">
-                <div class="w3-col m2 text-center">
-                    <img class="w3-circle" src="assets/images/user.png" style="width:96px;height:96px">
+            <% messages.forEach(message => { %>
+                <div class="w3-row">
+                    <div class="w3-col m2 text-center">
+                        <img class="w3-circle" src="<%= message.photo === null ? 'assets/images/user.png' : 'assets/images/imagesUsers/'+message.photo %>" style="width:96px;height:96px">
+                    </div>
+                    <div class="w3-col m10 w3-container">
+                        <% if (message.role === 'Administrateur') { %>
+                            <h4><strong style="color: red;">Administrateur (<%=message.nomComplet %>)</strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
+                        <% }else{ %>
+                            <h4><strong><%=message.nomComplet %></strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
+                        <% } %>
+                             
+                        <p><%=message.message %></p><br>
+                    </div>
                 </div>
-                <div class="w3-col m10 w3-container">
-                    <h4><strong style="color: red;">Administrateur</strong> <span class="w3-opacity w3-medium">Sep 29, 2014, 9:12 PM</span></h4>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius recusandae, quisquam eveniet accusantium vel saepe ipsam iure. Temporibus, soluta possimus.</p><br>
-                </div>
-            </div>
-
-            <div class="w3-row">
-                <div class="w3-col m2 text-center">
-                    <img class="w3-circle" src="assets/images/user.png" style="width:96px;height:96px">
-                </div>
-                <div class="w3-col m10 w3-container">
-                    <h4><strong>John</strong> <span class="w3-opacity w3-medium">Sep 29, 2014, 9:12 PM</span></h4>
-                    <p>Keep up the GREAT work! I am cheering for you!! Lorem ipsum dolor sit amet, consectetur
-                        adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><br>
-                </div>
-            </div>
-
-            <div class="w3-row">
-                <div class="w3-col m2 text-center">
-                    <img class="w3-circle" src="assets/images/user.png" style="width:96px;height:96px">
-                </div>
-                <div class="w3-col m10 w3-container">
-                    <h4><strong>Bo</strong> <span class="w3-opacity w3-medium">Sep 28, 2014, 10:15 PM</span></h4>
-                    <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><br>
-                </div>
-            </div>
+            <% }) %>
         </div>
     </section>
         

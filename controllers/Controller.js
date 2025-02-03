@@ -54,7 +54,7 @@ exports.index = (request, response)=>{
                                 }
                     
                                 response.status(200).render('layout/index', {
-                                    actif, 
+                                    actif,
                                     trous: resultat[0].trous, 
                                     users: users[0].users, 
                                     femmes : genreF[0].femmes, 
@@ -69,26 +69,6 @@ exports.index = (request, response)=>{
             })
         })
     })
-}
-
-exports.liste = (request, response)=>{
-
-    const actif = {
-        'accueil' : false,
-        'liste' : true,
-        'ajouter' : false,
-        'paiement' : false,
-        'utilisateurs' : false,
-        'statistique' : false,
-        'messages' : false,
-        'carte' : false,
-        'notes' : false,
-        'historique' : false,
-        'famille' : false,
-        'nomUser' : request.session.nom,
-        'photoUser' : request.session.photo
-    }
-    response.status(200).render('layout/liste', {actif})
 }
 
 exports.paiement = (request, response)=>{
@@ -127,25 +107,6 @@ exports.stats = (request, response)=>{
         'photoUser' : request.session.photo
     }
     response.status(200).render('layout/stats', {actif})
-}
-
-exports.messages = (request, response)=>{
-    const actif = {
-        'accueil' : false,
-        'liste' : false,
-        'ajouter' : false,
-        'paiement' : false,
-        'utilisateurs' : false,
-        'statistique' : false,
-        'messages' : true,
-        'carte' : false,
-        'notes' : false,
-        'historique' : false,
-        'famille' : false,
-        'nomUser' : request.session.nom,
-        'photoUser' : request.session.photo
-    }
-    response.status(200).render('layout/messages', {actif})
 }
 
 exports.carte = (request, response)=>{

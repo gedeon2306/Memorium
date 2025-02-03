@@ -1,13 +1,19 @@
 <% if (locals.flash && locals.flash.error) { %>
-    <div class="alert error">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        <%= flash.error %>
-    </div>
+    <script>
+        Swal.fire({
+            icon: "error",
+            title: "Erreur",
+            text: "<%=flash.error%>",
+        });
+    </script>
 <% } %>
 
 <% if (locals.flash && locals.flash.success) { %>
-    <div class="alert success">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        <%= flash.success %>
-    </div>
+    <script>
+        Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "<%=flash.success%>",
+        });
+    </script>
 <% } %>

@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt')  // Utilisation de bcrypt pour sécuriser les mots de passe
+const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 const upload = require('../config/upload')
 
@@ -117,12 +117,13 @@ exports.update = (request, response) => {
                 return response.status(500).render('layout/500', { error });
             }
 
-            if (error) {
-                return response.status(500).render('layout/500', { error });
-            }
-
             if (!token || token !== request.session.token) {
                 request.flash('error', 'Token invalide');
+                return response.status(400).redirect('/user.index');
+            }
+
+            if (!nomComplet || !userName || !role) {
+                request.flash('error', 'Le nom le nom d\'utilisateur et le role sont obligatoires');
                 return response.status(400).redirect('/user.index');
             }
 
@@ -238,6 +239,7 @@ exports.login = (request, response) => {
                 request.session.userId = user.id 
                 request.session.nom = user.nomComplet;
                 request.session.photo = user.photo;
+                request.session.role = user.role;
 
                 // Rediriger vers la liste des taches de l'utilisateur
                 response.status(300).redirect('/') 
