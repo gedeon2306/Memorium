@@ -59,7 +59,7 @@ exports.index = (request, response) => {
     })
 }
 
-exports.store = (request, response) =>{
+exports.storeInh = (request, response) =>{
 
     const token = request.body.token ? request.body.token : undefined
     const montant = request.body.montant
@@ -89,9 +89,9 @@ exports.store = (request, response) =>{
             }
 
             // Insérer le paiement
-            const paiementQuery = `INSERT INTO paiements (numFacture, montant, dateIncinerationPrevue, moyenPaiement, famille_id, defunt_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)`
-            
-            connection.query(paiementQuery, [numFacture, montant, dateIncinerationPrevue, moyenPaiement, familleId, defuntId, request.session.userId], (error, paiementResults) => {
+            const paiementQuery = `INSERT INTO paiements (numFacture, motif, montant, dateIncinerationPrevue, moyenPaiement, famille_id, defunt_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+            const motif = 'Prolanger Inhumation'
+            connection.query(paiementQuery, [numFacture, motif, montant, dateIncinerationPrevue, moyenPaiement, familleId, defuntId, request.session.userId], (error, paiementResults) => {
                 if (error) {
                     return response.status(500).render('layout/500', { error })
                 }
@@ -103,6 +103,67 @@ exports.store = (request, response) =>{
     
                     request.flash('success', 'Paiement effectué avec succès')
                     return response.status(200).redirect('/paiement.index')
+                })
+            })
+        })
+    })
+}
+
+exports.storeInc = (request, response) =>{
+
+    const token2 = request.body.token2 ? request.body.token2 : undefined
+    const montant2 = request.body.montant2
+    const moyenPaiement2 = request.body.moyenPaiement2
+    const familleId2 = request.body.familleId2
+    const defuntId2 = request.body.defuntId2
+
+    request.getConnection((error, connection)=>{
+        if (error) {
+            return response.status(500).render('layout/500', { erreur })
+        }
+
+        if (!token2 || token2 !== request.session.token) {
+            request.flash('error', 'Token invalide')
+            return response.status(400).redirect('/paiement.index')
+        }
+
+        if (!montant2 || !moyenPaiement2 || !familleId2 || !defuntId2) {
+            request.flash('error', 'Tous les champs sont obligatoires')
+            return response.status(400).redirect('/paiement.index')
+        }
+
+        connection.query('SELECT dateIncineration FROM defunts WHERE id = ?', [defuntId2], (error, result) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+
+            if (result.length === 0) {
+                request.flash('error', 'Défunt Introuvable')
+                return response.status(500).redirect('/paiement.index')
+            }
+
+
+            generateNumFacture(connection, (error, numFacture) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+
+                // Insérer le paiement
+                const paiementQuery = `INSERT INTO paiements (numFacture, motif, montant, dateIncinerationPrevue, moyenPaiement, famille_id, defunt_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+                const motif = 'Incineration'
+                connection.query(paiementQuery, [numFacture, motif, montant2, result[0].dateIncineration, moyenPaiement2, familleId2, defuntId2, request.session.userId], (error, paiementResults) => {
+                    if (error) {
+                        return response.status(500).render('layout/500', { error })
+                    }
+
+                    connection.query('UPDATE defunts SET statut = ? WHERE id = ?', ['Inhumation Prevue', defuntId2], (error, defuntUpdate) => {
+                        if (error) {
+                            return response.status(500).render('layout/500', { error })
+                        }
+        
+                        request.flash('success', 'Paiement effectué avec succès')
+                        return response.status(200).redirect('/paiement.index')
+                    })
                 })
             })
         })
@@ -200,105 +261,119 @@ exports.delete = (request, response) =>{
     })
 }
 
-exports.print = (request, response) =>{
-    
-    const id = request.params.id ? request.params.id : undefined
+exports.print = (request, response) => {
+    const id = request.params.id ? request.params.id : undefined;
 
-    request.getConnection((error, connection)=>{
+    request.getConnection((error, connection) => {
         if (error) {
-            return response.status(500).render('layout/500', { error })
+            return response.status(500).render('layout/500', { error });
         }
 
-        connection.query('SELECT p.*, f.*, d.nom, d.prenom, u.nomComplet FROM paiements p, familles f, defunts d, users u WHERE p.famille_id = f.id AND p.defunt_id = d.id AND p.user_id = u.id AND p.id = ?', [id], (error, facture)=>{
-            if (error) {
-                return response.status(500).render('layout/500', { error })
-            }
-            
-            if(facture.length === 0){
-                request.flash('error', "Facture non trouvée")
-                return response.status(400).redirect('/paiement.index')
-            }
+        connection.query(
+            'SELECT p.*, f.*, d.nom, d.prenom, u.nomComplet FROM paiements p, familles f, defunts d, users u WHERE p.famille_id = f.id AND p.defunt_id = d.id AND p.user_id = u.id AND p.id = ?', 
+            [id], 
+            (error, facture) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error });
+                }
 
-            const row = facture[0]
+                if (facture.length === 0) {
+                    request.flash('error', "Facture non trouvée");
+                    return response.status(400).redirect('/paiement.index');
+                }
 
-            // Créer un PDF en mémoire
-            const doc = new PDFDocument()
-            response.setHeader('Content-Type', 'application/pdf')
-            response.setHeader('Content-Disposition', 'inline filename="document.pdf"')
+                const row = facture[0];
+                const doc = new PDFDocument({ margin: 50 });
 
-            doc.pipe(response)
+                response.setHeader('Content-Type', 'application/pdf');
+                response.setHeader('Content-Disposition', 'inline; filename="facture.pdf"');
 
-            const imagePath = 'public/images/logo/memoriumLogo.png';
-            if (fs.existsSync(imagePath)) {
-                doc.image(imagePath, 50, 50, { width: 80 });
-            }
+                doc.pipe(response);
 
-            doc.fontSize(20)
-            .text('Memorium Reçu', 150, 70, { align: 'center' });
+                // Ajouter le logo
+                const imagePath = 'public/images/logo/memoriumLogo.png';
+                if (fs.existsSync(imagePath)) {
+                    doc.image(imagePath, 50, 30, { width: 80 });
+                }
 
-            doc.moveDown(2);
+                // Titre de la facture
+                doc.fontSize(20)
+                    .fillColor("#007bff")
+                    .text('Memorium - Reçu de Paiement', 0, 70, { align: 'center' });
 
-            function drawTable(doc, startX, startY, headers, rows) {
-                const columnWidths = [150, 350];
-                const rowHeight = 25;
-                let y = startY;
+                doc.moveDown(2);
 
-                doc.font('Helvetica-Bold').fontSize(12);
-                headers.forEach((header, i) => {
-                    doc.text(header, startX + (i === 0 ? 0 : columnWidths[0] + 10), y, { width: columnWidths[i], align: 'left' });
-                });
+                // Fonction pour dessiner des tableaux stylisés
+                function drawTable(doc, startX, startY, headers, rows) {
+                    const columnWidths = [150, 350];
+                    const rowHeight = 25;
+                    let y = startY;
 
-                y += rowHeight;
-                doc.moveTo(startX, y).lineTo(startX + columnWidths[0] + columnWidths[1] + 10, y).stroke();
+                    doc.font('Helvetica-Bold').fontSize(12).fillColor('#007bff');
 
-                doc.font('Helvetica').fontSize(10);
-                rows.forEach((row, rowIndex) => {
-                    y += rowHeight;
-                    row.forEach((cell, i) => {
-                        doc.text(cell, startX + (i === 0 ? 0 : columnWidths[0] + 10), y, { width: columnWidths[i], align: 'left' });
+                    headers.forEach((header, i) => {
+                        doc.text(header, startX + (i === 0 ? 0 : columnWidths[0] + 10), y, {
+                            width: columnWidths[i], 
+                            align: 'left'
+                        });
                     });
 
-                    doc.moveTo(startX, y + 20).lineTo(startX + columnWidths[0] + columnWidths[1] + 10, y + 20).stroke();
-                });
+                    y += rowHeight;
+                    doc.moveTo(startX, y).lineTo(startX + columnWidths[0] + columnWidths[1] + 10, y).stroke();
+
+                    doc.font('Helvetica').fontSize(10).fillColor('#333');
+
+                    rows.forEach((row) => {
+                        y += rowHeight;
+                        row.forEach((cell, i) => {
+                            doc.text(cell, startX + (i === 0 ? 0 : columnWidths[0] + 10), y, {
+                                width: columnWidths[i], 
+                                align: 'left'
+                            });
+                        });
+
+                        doc.moveTo(startX, y + 20).lineTo(startX + columnWidths[0] + columnWidths[1] + 10, y + 20).stroke();
+                    });
+                }
+
+                // Tableaux avec bordures fines
+                drawTable(doc, 50, doc.y, ['Famille', 'Informations'], [
+                    ['Famille', row.nomFamille],
+                    ['Nom Garrant', row.nomGarrant],
+                    ['Prénom Garrant', row.prenomGarrant],
+                    ['Téléphone', row.telephone]
+                ]);
+
+                doc.moveDown(2);
+
+                drawTable(doc, 50, doc.y, ['Défunt', 'Informations'], [
+                    ['Nom', row.nom],
+                    ['Prénom', row.prenom],
+                    ['Date Incinération Prévue', moment(row.dateIncinerationPrevue).format('DD/MM/YYYY')]
+                ]);
+
+                doc.moveDown(2);
+
+                drawTable(doc, 50, doc.y, ['Facture', 'Détails'], [
+                    ['N° Facture', row.numFacture],
+                    ['Montant', `${row.montant} FCFA`],
+                    ['Date Paiement', moment(row.datePaiement).format('DD/MM/YYYY HH:mm')],
+                    ['Moyen de Paiement', row.moyenPaiement]
+                ]);
+
+                doc.moveDown(2);
+
+                drawTable(doc, 50, doc.y, ['Memorium', 'Détails'], [
+                    ['Imprimé par', 'Admin (Session)'],
+                    ['Fait par', row.nomComplet],
+                    ['Date', new Date().toLocaleString()]
+                ]);
+
+                doc.end();
             }
-
-            drawTable(doc, 50, doc.y, ['Famille', 'Informations'], [
-                ['Famille', row.nomFamille],
-                ['Nom Garrant', row.nomGarrant],
-                ['Prénom Garrant', row.prenomGarrant],
-                ['Téléphone', row.telephone]
-            ]);
-
-            doc.moveDown(2);
-
-            drawTable(doc, 50, doc.y, ['Défunt', 'Informations'], [
-                ['Nom', row.nom],
-                ['Prénom', row.prenom],
-                ['Date Incinération Prévue', moment(row.dateIncinerationPrevue).format('DD/MM/YYYY')]
-            ]);
-
-            doc.moveDown(2);
-
-            drawTable(doc, 50, doc.y, ['Facture', 'Détails'], [
-                ['N° Facture', row.numFacture],
-                ['Montant', `${row.montant} FCFA`],
-                ['Date Paiement', moment(row.datePaiement).format('DD/MM/YYYY HH:mm')],
-                ['Moyen de Paiement', row.moyenPaiement]
-            ]);
-
-            doc.moveDown(2);
-
-            drawTable(doc, 50, doc.y, ['Memorium', 'Détails'], [
-                ['Imprimé par', 'Admin (Session)'],
-                ['Fait par', row.nomComplet],
-                ['Date', new Date().toLocaleString()]
-            ]);
-
-            doc.end();
-
-        })
-    })
-}
+        );
+    });
+};
 
 exports.show = (request, response) =>{
 

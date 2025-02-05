@@ -1,22 +1,75 @@
 <%-include("./composants/header") %>
 
-<section style="padding: 20px;">
-    <h2><b><i class="fa fa-print fa-fw"></i> Détail de la facture</b></h2>
-    <a href="/paiement.index" class="btn btn-bleu link">Retour</a>
-    <p>Facture</p>
-    <input type="text" value="<%=facture.numFacture %>" disabled>
-    <input type="text" value="<%=facture.montant %> FCFA" disabled>
-    <input type="text" value="<%=moment(facture.dateIncinerationPrevue).format('DD/MM/YYYY HH:mm') %>" disabled>
-    <input type="text" value="<%=moment(facture.datePaiement).format('DD/MM/YYYY') %>" disabled>
-    <p>Famille</p>
-    <input type="text" value="<%=facture.nomFamille %>" disabled>
-    <input type="text" value="<%=facture.nomGarrant %>" disabled>
-    <input type="text" value="<%=facture.prenomGarrant %>" disabled>
-    <input type="text" value="<%=facture.telephone %>" disabled>
-    <p>Defunt</p>
-    <input type="text" value="<%=facture.nom %>" disabled>
-    <input type="text" value="<%=facture.prenom %>" disabled>
+<div class="facture-container">
+    <h2 class="facture-title"><i class="fa fa-print"></i> Détail de la Facture</h2>
+    
+    <a href="/paiement.index" class="btn-retour">Retour</a>
 
-</section>
+    <div class="facture-section">
+        <h3>Facture</h3>
+        <table class="facture-table">
+            <tr>
+                <th>Numéro</th>
+                <td><%= facture.numFacture %></td>
+            </tr>
+            <tr>
+                <th>Moyen de Paiement</th>
+                <td><%= facture.moyenPaiement %></td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td><%= facture.montant %> FCFA</td>
+            </tr>
+            <tr>
+                <th>Motif</th>
+                <td><%= facture.motif %></td>
+            </tr>
+            <tr>
+                <th>Date Incinération Prévue</th>
+                <td><%= moment(facture.dateIncinerationPrevue).format('DD/MM/YYYY HH:mm') %></td>
+            </tr>
+            <tr>
+                <th>Date de Paiement</th>
+                <td><%= moment(facture.datePaiement).format('DD/MM/YYYY') %></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="facture-section">
+        <h3>Famille</h3>
+        <table class="facture-table">
+            <tr>
+                <th>Nom de la Famille</th>
+                <td><%= facture.nomFamille %></td>
+            </tr>
+            <tr>
+                <th>Nom du Garant</th>
+                <td><%= facture.nomGarrant %></td>
+            </tr>
+            <tr>
+                <th>Prénom du Garant</th>
+                <td><%= facture.prenomGarrant %></td>
+            </tr>
+            <tr>
+                <th>Téléphone</th>
+                <td><%= facture.telephone %></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="facture-section">
+        <h3>Défunt</h3>
+        <table class="facture-table">
+            <tr>
+                <th>Nom</th>
+                <td><%= facture.nom %></td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td><%= facture.prenom %></td>
+            </tr>
+        </table>
+    </div>
+</div>
 
 <%-include("./composants/footer") %>
