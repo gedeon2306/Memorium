@@ -142,8 +142,9 @@ exports.store = (request, response) => {
                                         return response.status(500).render('layout/500', { error });
                                     }
             
+                                    const paiementId = paiementResults.insertId
                                     request.flash('success', 'Défunt et paiement enregistrés avec succès');
-                                    return response.status(200).redirect('/defunt.ajouter');
+                                    return response.status(200).redirect(`/paiement.show/${paiementId}`);
                                 });
                             });
                         })

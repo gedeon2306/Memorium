@@ -96,13 +96,14 @@ exports.storeInh = (request, response) =>{
                     return response.status(500).render('layout/500', { error })
                 }
 
+                const paiementId = paiementResults.insertId
                 connection.query('UPDATE defunts SET dateIncineration = ? WHERE id = ?', [dateIncinerationPrevue, defuntId], (error, defuntUpdate) => {
                     if (error) {
                         return response.status(500).render('layout/500', { error })
                     }
     
                     request.flash('success', 'Paiement effectué avec succès')
-                    return response.status(200).redirect('/paiement.index')
+                    return response.status(200).redirect(`/paiement.show/${paiementId}`)
                 })
             })
         })
@@ -156,13 +157,14 @@ exports.storeInc = (request, response) =>{
                         return response.status(500).render('layout/500', { error })
                     }
 
+                    const paiementId = paiementResults.insertId
                     connection.query('UPDATE defunts SET statut = ? WHERE id = ?', ['Inhumation Prevue', defuntId2], (error, defuntUpdate) => {
                         if (error) {
                             return response.status(500).render('layout/500', { error })
                         }
         
                         request.flash('success', 'Paiement effectué avec succès')
-                        return response.status(200).redirect('/paiement.index')
+                        return response.status(200).redirect(`/paiement.show/${paiementId}`)
                     })
                 })
             })
@@ -170,7 +172,7 @@ exports.storeInc = (request, response) =>{
     })
 }
 
-exports.update = (request, response) =>{
+exports.updateInh = (request, response) =>{
 
     const id = request.body.id ? request.body.id : undefined
     const token = request.body.token ? request.body.token : undefined
@@ -213,6 +215,65 @@ exports.update = (request, response) =>{
                 }
 
                 connection.query('UPDATE defunts SET dateIncineration = ? WHERE id = ?', [dateIncinerationPrevue, defuntId], (error, defuntUpdate) => {
+                    if (error) {
+                        return response.status(500).render('layout/500', { error })
+                    }
+
+                    request.flash('success', 'Facture modifiée avec succès')
+                    return response.status(200).redirect('/paiement.index')
+                })
+            })
+        })
+    })
+}
+
+exports.updateInc = (request, response) =>{
+
+    const id2 = request.body.id2 ? request.body.id2 : undefined
+    const token2 = request.body.token2 ? request.body.token2 : undefined
+    const montant2 = request.body.montant2
+    const moyenPaiement2 = request.body.moyenPaiement2
+    const familleId2 = request.body.familleId2
+    const defuntId2 = request.body.defuntId2
+
+    request.getConnection((error, connection)=>{
+        if (error) {
+            return response.status(500).render('layout/500', { erreur })
+        }
+
+        if (!token2 || token2 !== request.session.token) {
+            request.flash('error', 'Token invalide')
+            return response.status(400).redirect('/paiement.index')
+        }
+
+        if (!montant2 || !moyenPaiement2 || !familleId2 || !defuntId2) {
+            request.flash('error', 'Tous les champs sont obligatoires')
+            return response.status(400).redirect('/paiement.index')
+        }
+
+        connection.query('SELECT dateIncineration FROM defunts WHERE id = ?', [defuntId2], (error, result) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+
+            if (result.length === 0) {
+                request.flash('error', 'Défunt Introuvable')
+                return response.status(500).redirect('/paiement.index')
+            }
+
+            connection.query('SELECT * FROM paiements WHERE id = ?', [id2], (error, results) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+
+                if (results.length < 0) {
+                    request.flash('error', 'Facture introuvable')
+                    return response.status(400).redirect('/paiement.index')
+                }
+
+                const paiementQuery = `UPDATE paiements SET montant = ?, dateIncinerationPrevue = ?, moyenPaiement = ?, famille_id = ?, defunt_id = ?, user_id = ? WHERE id = ?`
+            
+                connection.query(paiementQuery, [montant2, result[0].dateIncineration, moyenPaiement2, familleId2, defuntId2, request.session.userId, id2], (error, paiementResults) => {
                     if (error) {
                         return response.status(500).render('layout/500', { error })
                     }
@@ -400,7 +461,7 @@ exports.show = (request, response) =>{
             return response.status(500).render('layout/500', { error })
         }
 
-        connection.query('SELECT p.*, f.*, d.nom, d.prenom, u.nomComplet FROM paiements p, familles f, defunts d, users u WHERE p.famille_id = f.id AND p.defunt_id = d.id AND p.user_id = u.id AND p.id = ?', [id], (error, facture)=>{
+        connection.query('SELECT p.*, f.nomFamille, f.nomGarrant, f.prenomGarrant, f.telephone, d.nom, d.prenom, u.nomComplet FROM paiements p, familles f, defunts d, users u WHERE p.famille_id = f.id AND p.defunt_id = d.id AND p.user_id = u.id AND p.id = ?', [id], (error, facture)=>{
             if (error) {
                 return response.status(500).render('layout/500', { error })
             }

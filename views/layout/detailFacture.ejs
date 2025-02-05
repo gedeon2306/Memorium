@@ -1,10 +1,31 @@
 <%-include("./composants/header") %>
 
-<div class="facture-container">
-    <h2 class="facture-title"><i class="fa fa-print"></i> Détail de la Facture</h2>
-    
-    <a href="/paiement.index" class="btn-retour">Retour</a>
+<% if (locals.flash && locals.flash.success) { %>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "<%=flash.success %>"
+        });
+    </script>
+<% } %>
 
+<div class="facture-container">
+    <h2 class="facture-title"><i class="fa fa-file-alt"></i> Détail de la Facture</h2>
+    
+    <a href="/paiement.index" class="btn-retour"><i class="fas fa-arrow-left"></i> Retour </a>
+    <button class="btn btn-gris print-btn" data-id="<%=facture.id %>" data-facture="<%=facture.numFacture %>"><i class="fa fa-print fa-fw"></i> Imprimer</button>
+                                    
     <div class="facture-section">
         <h3>Facture</h3>
         <table class="facture-table">

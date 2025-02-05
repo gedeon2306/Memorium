@@ -34,7 +34,8 @@
     color: #333;
 }
 
-.card-surname {
+.card-surname,
+.card-statut {
     font-size: 1.2em;
     margin: 0 0 15px;
     color: #777;
