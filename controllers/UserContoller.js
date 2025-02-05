@@ -241,8 +241,9 @@ exports.login = (request, response) => {
                 request.session.photo = user.photo
                 request.session.role = user.role
 
-                // Rediriger vers la liste des taches de l'utilisateur
-                response.status(300).redirect('/') 
+                request.flash('connected', 'Bienvenue '+ request.session.nom)
+                response.status(300).redirect('/')
+
             })
         })
     })

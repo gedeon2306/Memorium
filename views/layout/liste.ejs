@@ -1,9 +1,12 @@
 <%-include("./composants/header") %>
 
+        <!-- Les alerts -->
+        <%-include('./composants/alerts') %>
+
         <section class="cards-section">
             <div class="input-container">
                 <i class="fa fa-search icon"></i>
-                <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Effectuez une recherche...">
+                <input class="input-field" type="text" id="myInput" onkeyup="myFunctionCard()" placeholder="Effectuez une recherche...">
             </div>
             <% defunts.forEach(defunt => { %>
                 <div class="card">
@@ -18,8 +21,7 @@
                         <h4 class="card-statut" style="color: red;"><%=defunt.statut %></h4>
                     <% } %>
                     <div class="card-buttons">
-                        <button class="btn btn-bleu"><i class="fa fa-eye fa-fw"></i></button>
-                        <button class="btn btn-rouge"><i class="far fa-trash-alt fa-fw"></i></button>
+                        <a href="/defunt.show/<%=defunt.id %>" class="btn btn-bleu"><i class="fa fa-eye fa-fw"></i></a>
                     </div>
                 </div>
             <% }) %>

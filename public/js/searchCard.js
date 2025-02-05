@@ -1,4 +1,4 @@
-function myFunction() {
+function myFunctionCard() {
     var input, filter, cards, card, name, surname, statut, i, txtValue;
     
     input = document.getElementById("myInput");

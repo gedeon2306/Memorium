@@ -6,6 +6,7 @@ const isAdmin = require('../middlewares/checkRole')
 
 router.get('/liste', checkAuth, defuntController.liste)
 router.get('/defunt.ajouter', checkAuth, defuntController.ajouter)
+router.get('/defunt.show/:id', checkAuth, defuntController.show)
 router.post('/defunt.store', checkAuth, defuntController.store)
 // router.post('/defunt.update', checkAuth, defuntController.update)
 // router.get('/defunt.delete/:id/:token', checkAuth, defuntController.delete)

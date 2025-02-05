@@ -3,6 +3,7 @@ const upload = require('../config/uploadDefunt')
 const { nombreRandom } = require('../config/genereNombre')
 const uuid = require('uuid')
 const generateNumFacture = require('../config/genereNumFacture')
+const moment = require('moment')
 
 exports.liste = (request, response)=>{
 
@@ -154,6 +155,47 @@ exports.store = (request, response) => {
 
             // Lancer la recherche de place disponible
             trouvePlace()
+        })
+    })
+}
+
+exports.show = (request, response) =>{
+
+    const actif = {
+        'accueil' : false,
+        'liste' : true,
+        'ajouter' : false,
+        'paiement' : false,
+        'utilisateurs' : false,
+        'statistique' : false,
+        'messages' : false,
+        'carte' : false,
+        'notes' : false,
+        'historique' : false,
+        'famille' : false,
+        'nomUser' : request.session.nom,
+        'photoUser' : request.session.photo
+    }
+
+    const id = request.params.id ? request.params.id : undefined
+
+    request.getConnection((error, connection)=>{
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        connection.query('SELECT d.*, f.nomFamille FROM defunts d, familles f WHERE d.famille_id = f.id AND d.id = ?', [id], (error, defunt)=>{
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+            
+            if(defunt.length === 0){
+                request.flash('error', "Defunt non trouvé")
+                return response.status(400).redirect('/liste')
+            }
+
+            return response.status(200).render('layout/detailDefunt', {defunt : defunt[0], actif, moment})
+
         })
     })
 }

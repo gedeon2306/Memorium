@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>Memorium</title>
@@ -45,7 +45,7 @@
                 
                 <div class="clearfix">
                     <button type="button" class="cancelbtn closeBtn" data-modal="modalLogout">Annuler</button>
-                    <a href="/logout" class="deletebtn" style="text-decoration: none;">Décooncter</a>
+                    <a href="/logout" class="deletebtn" style="text-decoration: none;">Déconnecter</a>
                 </div>
             </div>
         </div>
@@ -56,6 +56,26 @@
                     icon: "error",
                     title: "Erreur",
                     text: "<%=flash.errorAcces%>",
+                });
+            </script>
+        <% } %>
+
+        <% if (locals.flash && locals.flash.connected) { %>
+            <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "<%=flash.connected %>"
                 });
             </script>
         <% } %>
