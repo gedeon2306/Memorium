@@ -1,0 +1,22 @@
+<%-include("./composants/header") %>
+
+<section style="padding: 20px;">
+    <h2><b><i class="fa fa-print fa-fw"></i> Détail de la facture</b></h2>
+    <a href="/paiement.index" class="btn btn-bleu link">Retour</a>
+    <p>Facture</p>
+    <input type="text" value="<%=facture.numFacture %>" disabled>
+    <input type="text" value="<%=facture.montant %> FCFA" disabled>
+    <input type="text" value="<%=moment(facture.dateIncinerationPrevue).format('DD/MM/YYYY HH:mm') %>" disabled>
+    <input type="text" value="<%=moment(facture.datePaiement).format('DD/MM/YYYY') %>" disabled>
+    <p>Famille</p>
+    <input type="text" value="<%=facture.nomFamille %>" disabled>
+    <input type="text" value="<%=facture.nomGarrant %>" disabled>
+    <input type="text" value="<%=facture.prenomGarrant %>" disabled>
+    <input type="text" value="<%=facture.telephone %>" disabled>
+    <p>Defunt</p>
+    <input type="text" value="<%=facture.nom %>" disabled>
+    <input type="text" value="<%=facture.prenom %>" disabled>
+
+</section>
+
+<%-include("./composants/footer") %>

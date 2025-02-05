@@ -1,0 +1,33 @@
+<div id="myModal2" class="modal">
+    <div class="modal-content animate-modal">
+        <span class="closeAdd closeAdd2">&times;</span>
+        <form action="/paiement/incineration/store" method="post">
+            <h2>Ajouter une facture d'incinération</h2>
+            <input type="hidden" name="token" value="<%= token %>">
+
+            <div class="input-container">
+                <i class="icon">123</i>
+                <input class="input-field" type="number" placeholder="Le montant" name="montant" required>
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-calendar icon"></i>
+                <input class="input-field" type="date" name="dateIncinerationPrevue" required>
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-credit-card icon"></i>
+                <select class="input-field" name="moyenPaiement" required>
+                    <option value="" selected disabled>Moyen de paiement</option>
+                    <option value="Espèce">Espèce</option>
+                    <option value="Carte">Carte</option>
+                    <option value="Chèque">Chèque</option>
+                    <option value="Paiement Mobile">Paiement Mobile</option>
+                    <option value="Virement Bancaire">Virement Bancaire</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btnModal">Enregistrer <i class="fa fa-save"></i></button>
+        </form>
+    </div>
+</div>

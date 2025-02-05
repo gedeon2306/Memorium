@@ -81,3 +81,17 @@
 .btn-rouge:hover{
     background-color: #c20000;
 }
+
+.btn-gris{
+    background-color: #363636;
+}
+
+.btn-gris:hover{
+    background-color: #363636;
+}
+
+a.link{
+    padding-bottom: 12.5px;
+    font-size: 0.9em;
+    text-decoration: none;
+}

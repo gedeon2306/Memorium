@@ -1,0 +1,53 @@
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content animate-modal">
+        <span class="closeAdd">&times;</span>
+        <form action="/paiement.store" method="post">
+            <h2>Ajouter une facture d'inhumation</h2>
+            <input type="hidden" name="token" value="<%=token %>">
+            <div class="input-container">
+                <i class="icon">123</i>
+                <input class="input-field" type="number" placeholder="Le montant" name="montant" required>
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-calendar icon"></i>
+                <input class="input-field" type="date" placeholder="La date d'Incineration Prevue" name="dateIncinerationPrevue" required>
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-credit-card icon"></i>
+                <select class="input-field" name="moyenPaiement" id="moyenPaiement" required>
+                    <option value="" selected disabled>Moyen de paiement</option>
+                    <option value="Espèce">Espèce</option>
+                    <option value="Carte">Carte</option>
+                    <option value="Chèque">Chèque</option>
+                    <option value="Paiement Mobile">Paiement Mobile</option>
+                    <option value="Virement Bancaire">Virement Bancaire</option>
+                </select>
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-user-friends icon"></i>
+                <select class="input-field" name="familleId" id="familleId" required>
+                    <option value="" selected disabled>Selectionnez une famille</option>
+                    <% familles.forEach(famille => { %>
+                        <option value="<%= famille.id %>"><%= famille.nomFamille + ' (' + famille.nomGarrant + ' ' + famille.prenomGarrant + ')' %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="input-container">
+                <i class="fa fa-user icon"></i>
+                <select class="input-field" name="defuntId" id="defuntId" required>
+                    <option value="" selected disabled>Selectionnez un défunt</option>
+                    <% defunts.forEach(defunt => { %>
+                        <option value="<%= defunt.id %>"><%= defunt.nom + ' ' + defunt.prenom %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <button type="submit" class="btnModal">Enregistrer <i class="fa fa-save"></i></button>
+        </form>
+    </div>
+</div>
