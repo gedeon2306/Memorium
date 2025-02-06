@@ -159,6 +159,78 @@ exports.store = (request, response) => {
     })
 }
 
+exports.update = (request, response) => {
+    upload.single('photo')(request, response, (error) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error });
+        }
+
+        const token = request.body.token ? request.body.token : undefined
+        const { nom, prenom, genre, age, profession, dateNaiss, dateDeces, dateInhumation, dateIncineration, famille_id, id } = request.body;
+        const photoPath = request.file ? request.file.filename : null;
+
+        request.getConnection((error, connection) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error });
+            }
+
+            if (!token || token !== request.session.token || token === undefined) {
+                request.flash('error', 'Token invalide')
+                return response.status(400).redirect('/defunt.show/' + id)
+            }
+
+            if (!nom || !genre || !age || !dateNaiss || !dateDeces || !dateInhumation || !dateIncineration || !famille_id) {
+                request.flash('error', 'Tous les champs marqués en * rouge sont obligatoires')
+                return response.status(400).redirect('/defunt.show/' + id);
+            }
+
+            function prepareUpdate() {
+                let updateQuery = 'UPDATE defunts SET nom = ?, prenom = ?, genre = ?, age = ?, profession = ?, dateNaiss = ?, dateDeces = ?, dateInhumation = ?, dateIncineration = ?, famille_id = ?';
+                let params = [nom, prenom, genre, age, profession, dateNaiss, dateDeces, dateInhumation, dateIncineration, famille_id];
+
+                if (photoPath) {
+                    updateQuery += ', photo = ?';
+                    params.push(photoPath);
+                    removeOldPhoto(() => executeUpdate(updateQuery, params));
+                } else {
+                    executeUpdate(updateQuery, params);
+                }
+            }
+
+            function removeOldPhoto(callback) {
+                connection.query('SELECT photo FROM defunts WHERE id = ?', [id], (error, results) => {
+                    if (error) {
+                        return response.status(500).render('layout/500', { error });
+                    }
+                    if (results.length > 0 && results[0].photo) {
+                        const oldImagePath = `public/images/imagesDefunts/${results[0].photo}`;
+                        fs.unlink(oldImagePath, (err) => {
+                            if (err) console.error("Erreur lors de la suppression de l'image:", err);
+                            callback();
+                        });
+                    } else {
+                        callback();
+                    }
+                });
+            }
+
+            function executeUpdate(query, params) {
+                query += ' WHERE id = ?';
+                params.push(id);
+                connection.query(query, params, (error) => {
+                    if (error) {
+                        return response.status(500).render('layout/500', { error });
+                    }
+                    request.flash('success', 'Defunt mis à jour');
+                    return response.status(200).redirect('/defunt.show/' + id);
+                });
+            }
+
+            prepareUpdate();
+        });
+    });
+};
+
 exports.show = (request, response) =>{
 
     const actif = {
@@ -177,6 +249,9 @@ exports.show = (request, response) =>{
         'photoUser' : request.session.photo
     }
 
+    request.session.token = uuid.v4()
+    let token = request.session.token
+
     const id = request.params.id ? request.params.id : undefined
 
     request.getConnection((error, connection)=>{
@@ -194,8 +269,97 @@ exports.show = (request, response) =>{
                 return response.status(400).redirect('/liste')
             }
 
-            return response.status(200).render('layout/detailDefunt', {defunt : defunt[0], actif, moment})
+            connection.query('SELECT * FROM familles', [], (error, familles) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+    
+                return response.status(200).render('layout/detailDefunt', {defunt : defunt[0], actif, moment, token, familles})
+            })
+        })
+    })
+}
 
+exports.incinerer = (request, response) =>{
+    
+    const id = request.params.id ? request.params.id : undefined
+    const token = request.params.token ? request.params.token : undefined
+
+    request.getConnection((error, connection)=>{
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        if (token!=request.session.token || token === undefined || token === '' ) {
+            request.flash('error', "Token invalide")
+            return response.status(400).redirect('/liste')
+        }
+
+        connection.query('SELECT * FROM defunts WHERE id = ?', [id], (error, resultat)=>{
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+            
+            if(resultat.length === 0){
+                request.flash('error', "Defunt non trouvé")
+                return response.status(400).redirect('/liste')
+            }
+            
+            if(resultat[0].statut === 'Incineré'){
+                request.flash('info', "L'incineration a déjà été fait pour ce defunt")
+                return response.status(400).redirect('/liste')
+            }
+
+            if(resultat[0].statut === 'Inhumé'){
+                if (request.session.role !== 'Administrateur')  {
+                    request.flash('error', "L'incineration na pas encore été prevue, contactez l'administrateur")
+                    return response.status(400).redirect('/liste')
+                }
+            }
+
+            connection.query('UPDATE defunts SET statut = ? WHERE id = ?', ['Incineré',id], (error)=>{
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+                request.flash('success', "Defunt incineré")
+                return response.status(300).redirect('/liste')
+            })
+        })
+    })
+}
+
+exports.delete = (request, response) =>{
+    
+    const id = request.params.id ? request.params.id : undefined
+    const token = request.params.token ? request.params.token : undefined
+
+    request.getConnection((error, connection)=>{
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        if (token!=request.session.token || token === undefined || token === '' ) {
+            request.flash('error', "Token invalide")
+            return response.status(400).redirect('/liste')
+        }
+
+        connection.query('SELECT * FROM defunts WHERE id = ?', [id], (error, resultat)=>{
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+            
+            if(resultat.length === 0){
+                request.flash('error', "Defunt non trouvé")
+                return response.status(400).redirect('/liste')
+            }
+
+            connection.query('DELETE FROM defunts WHERE id = ?', [id], (error)=>{
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+                request.flash('success', "Defunt supprimé")
+                return response.status(300).redirect('/liste')
+            })
         })
     })
 }

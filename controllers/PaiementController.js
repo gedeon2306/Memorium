@@ -158,7 +158,7 @@ exports.storeInc = (request, response) =>{
                     }
 
                     const paiementId = paiementResults.insertId
-                    connection.query('UPDATE defunts SET statut = ? WHERE id = ?', ['Inhumation Prevue', defuntId2], (error, defuntUpdate) => {
+                    connection.query('UPDATE defunts SET statut = ? WHERE id = ?', ['Incineration Prevue', defuntId2], (error, defuntUpdate) => {
                         if (error) {
                             return response.status(500).render('layout/500', { error })
                         }

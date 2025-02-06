@@ -1,0 +1,55 @@
+<% if (locals.flash && locals.flash.success) { %>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "<%=flash.success %>"
+        });
+    </script>
+<% } else if (locals.flash && locals.flash.error) { %>
+    <script>
+        const ToastError = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        ToastError.fire({
+            icon: "error",
+            title: "<%=flash.error %>"
+        });
+    </script>
+<% } else if (locals.flash && locals.flash.info) { %>
+    <script>
+        const ToastInfo = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        ToastInfo.fire({
+            icon: "warning",
+            title: "<%=flash.info %>"
+        });
+    </script>
+<% } %>

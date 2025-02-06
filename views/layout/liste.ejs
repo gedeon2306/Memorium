@@ -1,7 +1,6 @@
 <%-include("./composants/header") %>
 
-        <!-- Les alerts -->
-        <%-include('./composants/alerts') %>
+        <%-include('./composants/toast') %>
 
         <section class="cards-section">
             <div class="input-container">
@@ -10,10 +9,10 @@
             </div>
             <% defunts.forEach(defunt => { %>
                 <div class="card">
-                    <img src="<%=defunt.photo === null ? 'assets/images/logo/memoriumLogo.png' : 'assets/images/imagesDefunts/'+defunt.photo %>" alt="Photo de profil" class="card-image">
+                    <img src="<%=defunt.photo === null ? 'assets/images/logo/memoriumLogo.png' : 'assets/images/imagesDefunts/'+defunt.photo %>" alt="Photo de profil" class="card-image-liste">
                     <h2 class="card-name"><%=defunt.nom %></h2>
                     <h3 class="card-surname"><%=defunt.prenom %></h3>
-                    <% if (defunt.statut === 'Inhumation Prevue') { %>
+                    <% if (defunt.statut === 'Incineration Prevue') { %>
                         <h4 class="card-statut"><%=defunt.statut %></h4>
                     <% } else if (defunt.statut === 'Inhumé') { %>   
                         <h4 class="card-statut" style="color: green;"><%=defunt.statut %></h4>

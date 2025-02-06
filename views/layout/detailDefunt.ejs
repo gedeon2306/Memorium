@@ -1,133 +1,112 @@
 <%- include("./composants/header") %>
 
-<section class="details-container">
-    <div class="details-card">
-        <h2><b><i class="fa fa-file-alt"></i> Détails sur le défunt</b></h2>
-        <div class="top-section">
-            <div class="profile-pic">
-                <img src="<%= defunt.photo === null ? '/assets/images/logo/memoriumLogo.png' : '/assets/images/imagesDefunts/' + defunt.photo %>" 
-                     alt="Photo de profil" class="card-image">
+        <%-include('./composants/toast') %>
+
+        <section class="details-container">
+            <div class="details-card">
+                <h2><b><i class="fa fa-file-alt"></i> Détails sur le défunt</b></h2>
+                <div class="top-section">
+                    <div class="profile-pic">
+                        <img src="<%= defunt.photo === null ? '/assets/images/logo/memoriumLogo.png' : '/assets/images/imagesDefunts/' + defunt.photo %>" 
+                            alt="Photo de profil" class="card-image">
+                    </div>
+                    <div class="personal-info">
+                        <h2><%= defunt.nom %></h2>
+                        <h3><%= defunt.prenom %></h3>
+                        <h4><%= defunt.age %> ans</h4>
+                    </div>
+                </div>
+
+                <div class="info">
+                    <p><strong>Genre :</strong> <%= defunt.genre === 'M' ? 'Masculin' : 'Féminin' %></p>
+                    <p><strong>Profession :</strong> <%= defunt.profession %></p>
+                    <p><strong>Date de naissance :</strong> <%= moment(defunt.dateNaiss).format('DD/MM/YYYY') %></p>
+                    <p><strong>Date de décès :</strong> <%= moment(defunt.dateDeces).format('DD/MM/YYYY') %></p>
+                    <p><strong>Emplacement :</strong> <%= defunt.place %></p>
+                    <p><strong>Date d’inhumation :</strong> <%= moment(defunt.dateInhumation).format('DD/MM/YYYY') %></p>
+                    <p><strong>Date d’incinération :</strong> <%= moment(defunt.dateIncineration).format('DD/MM/YYYY') %></p>
+                    <% if (defunt.statut === 'Inhumation Prevue') { %>
+                        <p><strong>Statut :</strong> <%= defunt.statut %></p>
+                    <% } else if (defunt.statut === 'Inhumé') { %>   
+                        <p><strong>Statut :</strong> <span style="color: green;"><%= defunt.statut %></span></p>
+                    <% } else { %>
+                        <p><strong>Statut :</strong> <span style="color: red;"><%= defunt.statut %></span></p>
+                    <% } %>
+                    <p><strong>Famille :</strong> <%= defunt.nomFamille %></p>
+                </div>
+
+                <!-- Ligne de séparation -->
+                <hr class="separator">
+
+                <!-- Boutons -->
+                <div class="button-container">
+                    <button class="btn btn-vert openModalBtn" data-modal="modal1">Modifier <i class="fa fa-edit"></i></button>
+                    <button data-id="<%=defunt.id %>" data-token="<%=token %>" class="btn btn-rouge deleteDefunt">Supprimer <i class="fa fa-trash-alt"></i></button>
+                    <button data-id="<%=defunt.id %>" data-token="<%=token %>" class="btn btn-gris incinerer">Incinerer <i class="fa fa-check"></i></button>
+                </div>
+                <div id="modal1" class="modal">
+                    <div class="modal-content animate-modal">
+                        <span class="close" data-modal="modal1">&times;</span>
+                        <form action="/defunt.update" method="post" class="formAjoutDefunt" enctype="multipart/form-data">
+                            <div class="form-content">
+                                <div class="formDefunt2">
+                                    <h2>Informations Personnelles</h2>
+                                    
+                                    <input type="hidden" name="token" value="<%=token %>">
+                                    <input type="hidden" name="id" value="<%=defunt.id %>">
+                
+                                    <div class="photo-upload-container">
+                                        <label for="photo-upload" class="photo-upload-label" id="photo-upload-label">
+                                        <span id="upload-text">📷 Cliquez pour ajouter</span>
+                                        <input type="file" id="photo-upload" accept="image/*" class="photo-upload-input" name="image">
+                                        </label>
+                                    </div>
+                
+                                    <label for="nom" class="labelFormAjoutDefunt"><span class="importance">* </span>Nom:</label>
+                                    <input class="inputDefunt" type="text" id="nom" name="nom" value="<%=defunt.nom %>" required>
+                
+                                    <label for="prenom" class="labelFormAjoutDefunt">Prénom:</label>
+                                    <input class="inputDefunt" type="text" id="prenom" name="prenom" value="<%=defunt.prenom %>">
+                
+                                    <label for="age" class="labelFormAjoutDefunt"><span class="importance">* </span>Age:</label>
+                                    <input class="inputDefunt" type="number" id="age" name="age" value="<%=defunt.age %>" required>
+                
+                                    <label class="labelFormAjoutDefunt"><span class="importance">* </span>Genre:</label>
+                                    <div class="radio-group">
+                                        <label><input type="radio" name="genre" value="M" <%= defunt.genre === 'M' ? 'checked' : '' %> required> Masculin</label>
+                                        <label><input type="radio" name="genre" value="F" <%= defunt.genre === 'F' ? 'checked' : '' %> required> Féminin</label>
+                                    </div>
+                
+                                    <label for="dateNaiss" class="labelFormAjoutDefunt"><span class="importance">* </span>Date de Naissance:</label>
+                                    <input class="inputDefunt" type="date" id="dateNaiss" name="dateNaiss" value="<%=moment(defunt.dateNaiss).format('YYYY-MM-DD') %>">
+                
+                                    <label for="profession" class="labelFormAjoutDefunt">Profession:</label>
+                                    <input class="inputDefunt" type="text" id="profession" name="profession" value="<%=defunt.profession %>">
+                                
+                                    <h2>Autres Informations</h2>
+                                    <label for="dateDeces" class="labelFormAjoutDefunt"><span class="importance">* </span>Date de Décès:</label>
+                                    <input class="inputDefunt" type="date" id="dateDeces" name="dateDeces" value="<%=moment(defunt.dateDeces).format('YYYY-MM-DD') %>" required>
+                
+                                    <label for="dateInhumation" class="labelFormAjoutDefunt"><span class="importance">* </span>Date d'Inhumation:</label>
+                                    <input class="inputDefunt" type="date" id="dateInhumation" name="dateInhumation" value="<%=moment(defunt.dateInhumation).format('YYYY-MM-DD') %>" required>
+                
+                                    <label for="dateIncineration" class="labelFormAjoutDefunt"><span class="importance">* </span>Date d'Incération prevue:</label>
+                                    <input class="inputDefunt" type="date" id="dateIncineration" name="dateIncineration" value="<%=moment(defunt.dateIncineration).format('YYYY-MM-DD') %>" required>
+                
+                                    <label for="famille_id" class="labelFormAjoutDefunt"><span class="importance">* </span>Famille (NomGarrant PrénomGarrant):</label>
+                                    <select class="inputDefunt" name="famille_id" id="famille_id">
+                                        <% familles.forEach(famille => { %>
+                                            <option value="<%= famille.id %>" <%= defunt.famille_id === famille.id ? 'selected' : '' %>><%= famille.nomFamille + ' (' + famille.nomGarrant + ' ' + famille.prenomGarrant + ')' %></option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btnAddDefunt">Enregistrer <i class="fa fa-save"></i></button>
+                        </form>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="personal-info">
-                <h2><%= defunt.nom %></h2>
-                <h3><%= defunt.prenom %></h3>
-                <h4><%= defunt.age %> ans</h4>
-            </div>
-        </div>
-
-        <div class="info">
-            <p><strong>Genre :</strong> <%= defunt.genre === 'M' ? 'Masculin' : 'Féminin' %></p>
-            <p><strong>Profession :</strong> <%= defunt.profession %></p>
-            <p><strong>Date de naissance :</strong> <%= moment(defunt.dateNaiss).format('DD/MM/YYYY') %></p>
-            <p><strong>Date de décès :</strong> <%= moment(defunt.dateDeces).format('DD/MM/YYYY') %></p>
-            <p><strong>Emplacement :</strong> <%= defunt.place %></p>
-            <p><strong>Date d’inhumation :</strong> <%= moment(defunt.dateInhumation).format('DD/MM/YYYY') %></p>
-            <p><strong>Date d’incinération :</strong> <%= moment(defunt.dateIncineration).format('DD/MM/YYYY') %></p>
-            <% if (defunt.statut === 'Inhumation Prevue') { %>
-                <p><strong>Statut :</strong> <%= defunt.statut %></p>
-            <% } else if (defunt.statut === 'Inhumé') { %>   
-                <p><strong>Statut :</strong> <span style="color: green;"><%= defunt.statut %></span></p>
-            <% } else { %>
-                <p><strong>Statut :</strong> <span style="color: red;"><%= defunt.statut %></span></p>
-            <% } %>
-            <p><strong>Famille :</strong> <%= defunt.nomFamille %></p>
-        </div>
-
-        <!-- Ligne de séparation -->
-        <hr class="separator">
-
-        <!-- Boutons -->
-        <div class="button-container">
-            <button class="btn btn-vert">Modifier <i class="fa fa-edit"></i></button>
-            <button class="btn btn-rouge">Supprimer <i class="fa fa-trash-alt"></i></button>
-            <button class="btn btn-gris">Incinerer <i class="fa fa-check"></i></button>
-        </div>
-    </div>
-</section>
+        </section>
 
 <%- include("./composants/footer") %>
-
-<style>
-.details-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.details-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 450px;
-    width: 100%;
-}
-
-.top-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.profile-pic {
-    flex-shrink: 0;
-}
-
-.card-image {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 3px solid #ddd;
-}
-
-.personal-info h2, 
-.personal-info h3, 
-.personal-info h4 {
-    margin: 0;
-    color: #333;
-}
-
-.personal-info h2 {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.personal-info h3 {
-    font-size: 18px;
-    color: #555;
-}
-
-.personal-info h4 {
-    font-size: 16px;
-    color: #777;
-}
-
-.info {
-    text-align: left;
-}
-
-.info p {
-    font-size: 16px;
-    color: #555;
-    margin: 5px 0;
-}
-
-/* Ligne de séparation */
-.separator {
-    margin: 20px 0;
-    border: 0;
-    height: 2px;
-    background: #ddd;
-}
-
-/* Boutons */
-.button-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-
-</style>

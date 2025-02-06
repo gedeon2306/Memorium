@@ -14,7 +14,10 @@
 .formDefunt {
     width: 48%;
 }
-.formDefunt h2 {
+.formDefunt2 {
+    width: 100%;
+}
+.formDefunt, .formDefunt2 h2 {
     color: #28a745;
     border-bottom: 2px solid #28a745;
     padding-bottom: 5px;

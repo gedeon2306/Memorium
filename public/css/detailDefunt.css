@@ -1,0 +1,80 @@
+.details-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.details-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 450px;
+    width: 100%;
+}
+
+.top-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.profile-pic {
+    flex-shrink: 0;
+}
+
+.card-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 3px solid #ddd;
+}
+
+.personal-info h2, 
+.personal-info h3, 
+.personal-info h4 {
+    margin: 0;
+    color: #333;
+}
+
+.personal-info h2 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.personal-info h3 {
+    font-size: 18px;
+    color: #555;
+}
+
+.personal-info h4 {
+    font-size: 16px;
+    color: #777;
+}
+
+.info {
+    text-align: left;
+}
+
+.info p {
+    font-size: 16px;
+    color: #555;
+    margin: 5px 0;
+}
+
+/* Ligne de séparation */
+.separator {
+    margin: 20px 0;
+    border: 0;
+    height: 2px;
+    background: #ddd;
+}
+
+/* Boutons */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
