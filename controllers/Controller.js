@@ -1,5 +1,7 @@
 const { request, response } = require('express')
 const uuid = require('uuid')
+const { addToHistory } = require('../config/historique')
+const moment = require('moment')
 
 exports.index = (request, response)=>{
 
@@ -52,6 +54,8 @@ exports.index = (request, response)=>{
                                 if (error) {
                                     return response.status(500).render('layout/500', { error })
                                 }
+
+                                addToHistory(request, 'A acceder à l\'accueil')
                     
                                 response.status(200).render('layout/index', {
                                     actif,
@@ -87,6 +91,9 @@ exports.stats = (request, response)=>{
         'nomUser' : request.session.nom,
         'photoUser' : request.session.photo
     }
+
+    addToHistory(request, 'A acceder à statistique')
+
     response.status(200).render('layout/stats', {actif})
 }
 
@@ -115,6 +122,7 @@ exports.carte = (request, response)=>{
             if (error) {
                 return response.status(500).render('layout/500', { error })
             }
+            addToHistory(request, 'A acceder à la card')
             response.status(200).render('layout/carte', {actif, resultat})
         })
     })
@@ -145,6 +153,7 @@ exports.notes = (request, response)=>{
             if (error) {
                 return response.status(500).render('layout/500', { error })
             }
+            addToHistory(request, 'A acceder aux notes')
             response.status(200).render('layout/notes', {actif, resultat})
         })
     })
@@ -166,7 +175,23 @@ exports.historique = (request, response)=>{
         'nomUser' : request.session.nom,
         'photoUser' : request.session.photo
     }
-    response.status(200).render('layout/historique', {actif})
+
+    request.getConnection((error, connection) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+
+        addToHistory(request, 'A acceder à l\'historique')
+
+        connection.query("SELECT h.*, u.nomComplet FROM historiques h, users u WHERE h.user_id = u.id ORDER BY date DESC ", [], (error, historiques) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+
+            response.status(200).render('layout/historique', {actif, historiques, moment})
+
+        })
+    })
 }
 
 exports.login = ('/Connexion', (request, response)=>{
@@ -196,15 +221,24 @@ exports.login = ('/Connexion', (request, response)=>{
     })
 })
 
-exports.logout = ('/logout', (request, response) => {
-    // Détruire la session
-    request.session.destroy((error) => {
+exports.logout = (request, response) => {
+    request.getConnection((error, connection) => {
         if (error) {
-            return response.status(500).render('layout/500');
+            return response.status(500).render('layout/500', { error })
         }
 
-        response.redirect('/');
-    });
-});
+        const query = 'INSERT INTO historiques (actionEffectuee, user_id) VALUES (?, ?)'
+        connection.query(query, ['Déconnexion', request.session.userId], (error) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
 
-
+            request.session.destroy((error) => {
+                if (error) {
+                    return response.status(500).render('layout/500')
+                }
+                response.redirect('/')
+            })
+        })
+    })
+}

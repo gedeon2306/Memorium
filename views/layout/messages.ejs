@@ -1,5 +1,7 @@
 <%-include("./composants/header") %>
 
+    <%-include('./composants/toast') %>
+
     <section style="padding: 20px;">
         <div class="w3-container">
             <h2><i class="fa fa-comment fa-fw"></i> Messages</h2>
@@ -7,24 +9,30 @@
             
             <div class="input-container">
                 <i class="fa fa-search icon"></i>
-                <input class="input-field" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+                <input class="input-field" type="text" id="myInput" onkeyup="filterMessages()" placeholder="Search for names..">
             </div>
-            <% messages.forEach(message => { %>
-                <div class="w3-row">
-                    <div class="w3-col m2 text-center">
-                        <img class="w3-circle" src="<%= message.photo === null ? 'assets/images/user.png' : 'assets/images/imagesUsers/'+message.photo %>" style="width:96px;height:96px">
+            <div id="messagesContainer" style="overflow-y: auto; height: 326px;">
+                <% messages.forEach(message => { %>
+                    <div class="w3-row">
+                        <div class="w3-col m2 text-center">
+                            <img class="w3-circle" src="<%= message.photo === null ? 'assets/images/user.png' : 'assets/images/imagesUsers/'+message.photo %>" style="width:96px;height:96px">
+                        </div>
+                        <div class="w3-col m10 w3-container">
+                            <% if (message.role === 'Administrateur') { %>
+                                <h4><strong style="color: red;">Administrateur (<%=message.nomComplet %>)</strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
+                            <% }else{ %>
+                                <h4><strong><%=message.nomComplet %></strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
+                            <% } %>
+                                
+                            <p><%=message.message %></p><br>
+                        </div>
                     </div>
-                    <div class="w3-col m10 w3-container">
-                        <% if (message.role === 'Administrateur') { %>
-                            <h4><strong style="color: red;">Administrateur (<%=message.nomComplet %>)</strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
-                        <% }else{ %>
-                            <h4><strong><%=message.nomComplet %></strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
-                        <% } %>
-                             
-                        <p><%=message.message %></p><br>
-                    </div>
-                </div>
-            <% }) %>
+                <% }) %>
+            </div>
+            <form class="form-messages" method="post" action="/message.store">
+                <input type="text" id="myInput" name="message" placeholder="Ecrire...">
+                <button type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
         </div>
     </section>
         

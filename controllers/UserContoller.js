@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 const upload = require('../config/upload')
+const { addToHistory } = require('../config/historique')
 
 exports.index = (request, response)=>{
 
@@ -33,6 +34,7 @@ exports.index = (request, response)=>{
                 return response.status(500).render('layout/500', { error })
             }
 
+            addToHistory(request, 'A acceder à la liste des utilisateurs')
             response.status(200).render('layout/utilisateurs', {token, actif, users})
         })
     })
@@ -87,6 +89,7 @@ exports.store = (request, response) => {
                             return response.status(500).render('layout/500', { error })
                         }
 
+                        addToHistory(request, 'A ajouté l\'utilisateur ' + nomComplet)
                         request.flash('success', 'Utilisateur enregistré')
                         return response.status(400).redirect('/user.index')
                     })
@@ -190,6 +193,8 @@ exports.update = (request, response) => {
                         if (error) {
                             return response.status(500).render('layout/500', { error })
                         }
+
+                        addToHistory(request, 'A mis à jour les information de l\'utilisateur ' + nomComplet)
                         request.flash('success', 'Utilisateur mis à jour')
                         return response.status(200).redirect('/user.index')
                     })
@@ -241,6 +246,8 @@ exports.login = (request, response) => {
                 request.session.photo = user.photo
                 request.session.role = user.role
 
+                addToHistory(request, 'Connexion')
+
                 request.flash('connected', 'Bienvenue '+ request.session.nom)
                 response.status(300).redirect('/')
 
@@ -278,6 +285,8 @@ exports.delete = (request, response) =>{
                 if (error) {
                     return response.status(500).render('layout/500', { error })
                 }
+
+                addToHistory(request, 'A supprimé l\'utilisateur ' + resultat[0].nomComplet)
                 request.flash('success', "Utilisateur supprimé")
                 return response.status(300).redirect('/user.index')
             })

@@ -22,8 +22,18 @@ app.use(session({
     secret : 'agdhdjieyieyuxnjsezertyzu', // Clé secrète pour la session
     resave : false, // Ne pas sauvegarder la session si rien n'a changé
     saveUninitialized : true, // Sauvegarder les sessions non initialisées
-    cookie : {secure : false} // Définition du cookie de session, ici non sécurisé
-}))
+    //cookie : {secure : false} // Définition du cookie de session, ici non sécurisé
+    cookie: { maxAge: 15 * 60 * 1000 } // Déconnexion après 15 minutes d'inactivité
+}));
+
+// Middleware pour rafraîchir la session si l'utilisateur est actif
+app.use((req, res, next) => {
+    if (req.session) {
+        req.session.touch(); // Rafraîchit la session
+    }
+    next();
+});
+
 app.use(morgan('dev'))
 app.use(require('./middlewares/flash'))
 app.use('/assets', express.static('public'))

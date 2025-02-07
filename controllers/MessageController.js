@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 const moment = require('moment');
+const { addToHistory } = require('../config/historique')
 
 exports.index = (request, response) => {
 
@@ -32,68 +33,34 @@ exports.index = (request, response) => {
                 return response.status(500).render('layout/500', { error })
             }
 
+            addToHistory(request, 'A acceder aux messages')
             response.status(200).render('layout/messages', {token, actif, messages, moment})
         })
     })
 }
 
-// exports.store = (request, response) =>{
+exports.store = (request, response) =>{
 
-//     const token = request.body.token ? request.body.token : undefined
-//     const nomFamille = request.body.nomFamille
-//     const nomGarrant = request.body.nomGarrant
-//     const prenomGarrant = request.body.prenomGarrant
-//     const profession = request.body.profession
-//     const telephone = request.body.telephone
-//     const email = request.body.email
+    const message = request.body.message ? request.body.message : undefined
 
-//     request.getConnection((error, connection)=>{
-//         if (error) {
-//             return response.status(500).render('layout/500', { erreur })
-//         }
+    request.getConnection((error, connection)=>{
+        if (error) {
+            return response.status(500).render('layout/500', { erreur })
+        }
 
-//         if (!token || token !== request.session.token) {
-//             request.flash('error', 'Token invalide');
-//             return response.status(400).redirect('/famille.index');
-//         }
+        if (!message || message === '') {
+            request.flash('error', 'Saisissez le message a envoyer');
+            return response.status(400).redirect('/message.index');
+        }
 
-//         if (!nomFamille || !nomGarrant || !prenomGarrant || !profession || !telephone || !email) {
-//             request.flash('error', 'Tous les champs sont obligatoires');
-//             return response.status(400).redirect('/famille.index');
-//         }
+        connection.query('INSERT INTO messages(message, user_id) VALUES(?,?)', [message, request.session.userId], (error)=>{
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
 
-//         connection.query('SELECT * FROM familles WHERE email = ?', [email], (error, results) => {
-//             if (error) {
-//                 return response.status(500).render('layout/500', { error })
-//             }
-
-//             if (results.length > 0) {
-//                 request.flash('error', "email déjà utilisé")
-//                 return response.status(400).redirect('/famille.index')
-//             }
-
-//             connection.query('SELECT * FROM familles WHERE telephone = ?', [telephone], (error, results) => {
-//                 if (error) {
-//                     return response.status(500).render('layout/500', { error })
-//                 }
-    
-//                 if (results.length > 0) {
-//                     request.flash('error', "Numéro de téléphone déjà utilisé")
-//                     return response.status(400).redirect('/famille.index')
-//                 }
-
-//                 connection.query(
-//                     'INSERT INTO familles(nomFamille, nomGarrant, prenomGarrant, profession, telephone, email) VALUES(?,?,?,?,?,?)', 
-//                     [nomFamille, nomGarrant, prenomGarrant, profession, telephone, email],
-//                     (error)=>{
-//                     if (error) {
-//                         return response.status(500).render('layout/500', { error })
-//                     }
-
-//                     request.flash('success', "Famille enregistrée")
-//                     return response.status(300).redirect('/famille.index')
-//                 })
-//             })
-//         })
-//     })
-// }
+            addToHistory(request, 'A envoyé un message')
+            request.flash('success', "Message envoyé")
+            return response.status(300).redirect('/message.index')
+        })
+    })
+}

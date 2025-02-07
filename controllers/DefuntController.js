@@ -4,6 +4,7 @@ const { nombreRandom } = require('../config/genereNombre')
 const uuid = require('uuid')
 const generateNumFacture = require('../config/genereNumFacture')
 const moment = require('moment')
+const { addToHistory } = require('../config/historique')
 
 exports.liste = (request, response)=>{
 
@@ -33,6 +34,7 @@ exports.liste = (request, response)=>{
                 return response.status(500).render('layout/500', { error })
             }
 
+            addToHistory(request, 'A acceder à la liste des défunts')
             response.status(200).render('layout/liste', {actif, defunts})
         })
     })
@@ -67,6 +69,7 @@ exports.ajouter = (request, response)=>{
                 return response.status(500).render('layout/500', { error })
             }
 
+            addToHistory(request, 'A acceder à l\'interface ajouter défunt')
             response.status(200).render('layout/ajouter', {token, actif, familles})
         })
     })
@@ -142,7 +145,8 @@ exports.store = (request, response) => {
                                     if (error) {
                                         return response.status(500).render('layout/500', { error });
                                     }
-            
+
+                                    addToHistory(request, 'A ajouter le défunt '+ nom + ' ' + prenom)
                                     const paiementId = paiementResults.insertId
                                     request.flash('success', 'Défunt et paiement enregistrés avec succès');
                                     return response.status(200).redirect(`/paiement.show/${paiementId}`);
@@ -221,6 +225,7 @@ exports.update = (request, response) => {
                     if (error) {
                         return response.status(500).render('layout/500', { error });
                     }
+                    addToHistory(request, 'A mis à jour les information du défunt '+ nom + ' ' + prenom)
                     request.flash('success', 'Defunt mis à jour');
                     return response.status(200).redirect('/defunt.show/' + id);
                 });
@@ -274,6 +279,7 @@ exports.show = (request, response) =>{
                     return response.status(500).render('layout/500', { error })
                 }
     
+                addToHistory(request, 'A acceder aux informations du '+ defunt[0].nom + ' ' + defunt[0].prenom)
                 return response.status(200).render('layout/detailDefunt', {defunt : defunt[0], actif, moment, token, familles})
             })
         })
@@ -306,12 +312,14 @@ exports.incinerer = (request, response) =>{
             }
             
             if(resultat[0].statut === 'Incineré'){
+                addToHistory(request, 'A tenté d\'incinerer un défunt déjà incineré')
                 request.flash('info', "L'incineration a déjà été fait pour ce defunt")
                 return response.status(400).redirect('/liste')
             }
 
             if(resultat[0].statut === 'Inhumé'){
-                if (request.session.role !== 'Administrateur')  {
+                if (request.session.role !== 'Administrateur'){
+                    addToHistory(request, 'A tenté d\'incinerer un défunt dont l\'incineration n\'a pas encore été prevue')
                     request.flash('error', "L'incineration na pas encore été prevue, contactez l'administrateur")
                     return response.status(400).redirect('/liste')
                 }
@@ -321,6 +329,8 @@ exports.incinerer = (request, response) =>{
                 if (error) {
                     return response.status(500).render('layout/500', { error })
                 }
+
+                addToHistory(request, 'A incinerer le défunt '+ resultat[0].nom + ' ' + resultat[0].prenom)
                 request.flash('success', "Defunt incineré")
                 return response.status(300).redirect('/liste')
             })
@@ -357,6 +367,8 @@ exports.delete = (request, response) =>{
                 if (error) {
                     return response.status(500).render('layout/500', { error })
                 }
+
+                addToHistory(request, 'A supprimé le défunt ' + resultat[0].nom + ' ' + resultat[0].prenom)
                 request.flash('success', "Defunt supprimé")
                 return response.status(300).redirect('/liste')
             })

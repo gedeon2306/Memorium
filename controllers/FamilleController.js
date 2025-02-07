@@ -1,4 +1,5 @@
 const uuid = require('uuid')
+const { addToHistory } = require('../config/historique')
 
 exports.index = (request, response) => {
 
@@ -31,6 +32,7 @@ exports.index = (request, response) => {
                 return response.status(500).render('layout/500', { error })
             }
 
+            addToHistory(request, 'A acceder à la liste des familles')
             response.status(200).render('layout/familles', {token, actif, familles})
         })
     })
@@ -81,14 +83,13 @@ exports.store = (request, response) =>{
                     return response.status(400).redirect('/famille.index')
                 }
 
-                connection.query(
-                    'INSERT INTO familles(nomFamille, nomGarrant, prenomGarrant, profession, telephone, email) VALUES(?,?,?,?,?,?)', 
-                    [nomFamille, nomGarrant, prenomGarrant, profession, telephone, email],
-                    (error)=>{
+                const query = 'INSERT INTO familles(nomFamille, nomGarrant, prenomGarrant, profession, telephone, email) VALUES(?,?,?,?,?,?)'
+                connection.query(query, [nomFamille, nomGarrant, prenomGarrant, profession, telephone, email],(error)=>{
                     if (error) {
                         return response.status(500).render('layout/500', { error })
                     }
 
+                    addToHistory(request, 'A ajouté la famille ' + nomFamille)
                     request.flash('success', "Famille enregistrée")
                     return response.status(300).redirect('/famille.index')
                 })
@@ -149,6 +150,7 @@ exports.update = (request, response) =>{
                         return response.status(500).render('layout/500', { error })
                     }
     
+                    addToHistory(request, 'A mis à jour les informations de la famille ' + nomFamille)
                     request.flash('success', "Famille Modifiée")
                     return response.status(300).redirect('/famille.index')
                 })
@@ -186,6 +188,7 @@ exports.delete = (request, response) =>{
                 if (error) {
                     return response.status(500).render('layout/500', { error })
                 }
+                addToHistory(request, 'A supprrimé la famille ' + resultat[0].nomFamille)
                 request.flash('success', "Famille supprimée")
                 return response.status(300).redirect('/famille.index')
             })

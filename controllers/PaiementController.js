@@ -3,6 +3,8 @@ const moment = require('moment')
 const generateNumFacture = require('../config/genereNumFacture')
 const PDFDocument = require('pdfkit')
 const fs = require('fs')
+const { addToHistory } = require('../config/historique')
+const { query } = require('express')
 
 exports.index = (request, response) => {
 
@@ -45,6 +47,7 @@ exports.index = (request, response) => {
                         return response.status(500).render('layout/500', { error })
                     }
         
+                    addToHistory(request, 'A acceder à la liste des paiements')
                     response.status(200).render('layout/paiement', {
                         token, 
                         actif, 
@@ -102,6 +105,7 @@ exports.storeInh = (request, response) =>{
                         return response.status(500).render('layout/500', { error })
                     }
     
+                    addToHistory(request, 'A ajouté une facture d\'inhumation ' + numFacture)
                     request.flash('success', 'Paiement effectué avec succès')
                     return response.status(200).redirect(`/paiement.show/${paiementId}`)
                 })
@@ -163,6 +167,7 @@ exports.storeInc = (request, response) =>{
                             return response.status(500).render('layout/500', { error })
                         }
         
+                        addToHistory(request, 'A ajouté une facture d\'incineration ' + numFacture)
                         request.flash('success', 'Paiement effectué avec succès')
                         return response.status(200).redirect(`/paiement.show/${paiementId}`)
                     })
@@ -219,6 +224,7 @@ exports.updateInh = (request, response) =>{
                         return response.status(500).render('layout/500', { error })
                     }
 
+                    addToHistory(request, 'A modifié la facture d\'inhumation ' + results[0].numFacture)
                     request.flash('success', 'Facture modifiée avec succès')
                     return response.status(200).redirect('/paiement.index')
                 })
@@ -278,6 +284,7 @@ exports.updateInc = (request, response) =>{
                         return response.status(500).render('layout/500', { error })
                     }
 
+                    addToHistory(request, 'A modifier la facture d\'incineration ' + results[0].numFacture)
                     request.flash('success', 'Facture modifiée avec succès')
                     return response.status(200).redirect('/paiement.index')
                 })
@@ -315,6 +322,8 @@ exports.delete = (request, response) =>{
                 if (error) {
                     return response.status(500).render('layout/500', { error })
                 }
+
+                addToHistory(request, 'A supprimé la facture ' + resultat[0].numFacture)
                 request.flash('success', "Paiement supprimé")
                 return response.status(300).redirect('/paiement.index')
             })
@@ -342,6 +351,8 @@ exports.print = (request, response) => {
                     request.flash('error', "Facture non trouvée");
                     return response.status(400).redirect('/paiement.index');
                 }
+
+                addToHistory(request, 'A imprimé une facture')
 
                 const row = facture[0];
                 const doc = new PDFDocument({ margin: 50 });
@@ -461,7 +472,8 @@ exports.show = (request, response) =>{
             return response.status(500).render('layout/500', { error })
         }
 
-        connection.query('SELECT p.*, f.nomFamille, f.nomGarrant, f.prenomGarrant, f.telephone, d.nom, d.prenom, u.nomComplet FROM paiements p, familles f, defunts d, users u WHERE p.famille_id = f.id AND p.defunt_id = d.id AND p.user_id = u.id AND p.id = ?', [id], (error, facture)=>{
+        const query = 'SELECT p.*, f.nomFamille, f.nomGarrant, f.prenomGarrant, f.telephone, d.nom, d.prenom, u.nomComplet FROM paiements p, familles f, defunts d, users u WHERE p.famille_id = f.id AND p.defunt_id = d.id AND p.user_id = u.id AND p.id = ?'
+        connection.query(query, [id], (error, facture)=>{
             if (error) {
                 return response.status(500).render('layout/500', { error })
             }
@@ -471,6 +483,7 @@ exports.show = (request, response) =>{
                 return response.status(400).redirect('/paiement.index')
             }
 
+            addToHistory(request, 'A acceder aux informations de la facture ' + facture[0].numFacture)
             return response.status(200).render('layout/detailFacture', {facture : facture[0], actif, moment})
 
         })
