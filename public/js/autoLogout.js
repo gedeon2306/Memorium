@@ -1,11 +1,11 @@
-let inactivityTime = 15 * 60 * 1000; // 15 minutes
+let inactivityTime = 10 * 60 * 1000; // 10 minutes
 let timeout;
 
 function resetTimer() {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-        fetch('/user/logout') // Déconnexion automatique
-            .then(() => window.location.href = '/login');
+        fetch('/logout') // Déconnexion automatique
+            .then(() => window.location.href = '/');
     }, inactivityTime);
 }
 

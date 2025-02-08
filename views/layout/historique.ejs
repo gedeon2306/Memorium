@@ -19,13 +19,21 @@
                 <% let num = 0; historiques.forEach(historique => { %>
                     <tr>
                         <td><%=num+=1 %></td>
-                        <td><%=historique.actionEffectuee %></td>
-                        <td style="color: green; font-weight: boldER;"><%=moment(historique.date).format('DD/MM/YYYY | HH:mm') %></td>
+                        <td>
+                            <% if (historique.actionEffectuee === 'Connexion') { %>
+                                <span style="color: green; font-weight: bolder;"><%=historique.actionEffectuee %></span>
+                            <% } else if (historique.actionEffectuee === 'Déconnexion') { %>
+                                <span style="color: red; font-weight: bolder;"><%=historique.actionEffectuee %></span>
+                            <% } else { %>
+                                <span><%=historique.actionEffectuee %></span>
+                            <% } %>
+                        </td>
+                        <td style="color: green; font-weight: bolder;"><%=moment(historique.date).format('DD/MM/YYYY | HH:mm') %></td>
                         <td><%=historique.nomComplet %></td>
                     </tr>
                 <% }) %>
             </tbody>
         </table>
     </section>
-        
+
 <%-include("./composants/footer") %>

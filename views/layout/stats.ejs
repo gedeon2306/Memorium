@@ -1,5 +1,215 @@
 <%-include("./composants/header") %>
+    <div class="cards-section">
+        <div class="chart-container">
+            <canvas id="myChart1"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="myChart2"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="myChart3"></canvas>
+        </div>
+    </div>
+    <div>
+        <div class="chart">
+            <h3>Stats Inhumation Par Mois Et Par Années</h3>
+            <canvas id="inhumationsChart"></canvas>
+        </div>
+        <div class="chart">
+            <h3>Stats Incineration Par Mois Et Par Années</h3>
+            <canvas id="incinerationsChart"></canvas>
+        </div>
+    </div>
 
-    
+    <!-- Diagramme en secteurs (camembert) -->
+    <script>
+        Chart.register(ChartDataLabels);
+
+        function createChart(canvasId, data) {
+            const total = data.reduce((acc, val) => acc + val, 0);
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Administrateurs '+ administrateurs, 'Stagiaires '+ stagiaires],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['blue', 'red']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: 'white',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: (value) => {
+                                return ((value / total) * 100).toFixed(0) + '%';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createChart2(canvasId, data) {
+            const total = data.reduce((acc, val) => acc + val, 0);
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Administrateurs', 'Stagiaires', 'Assistants'],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['purple', 'green', 'brown']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: 'white',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: (value) => {
+                                return ((value / total) * 100).toFixed(0) + '%';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createChart3(canvasId, data) {
+            const total = data.reduce((acc, val) => acc + val, 0);
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Inhumations ' + inhumation, 'Incinerations ' + incineration],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['teal', 'orange']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: 'white',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: (value) => {
+                                return ((value / total) * 100).toFixed(1) + '%';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        
+        var inhumation = <%- resultat.inhumation %>;
+        var incineration = <%- resultat.incineration %>;
+        var Pourcentageinhumation = <%- ((resultat.inhumation * 100) / resultat.total).toFixed(1) %>;
+        var Pourcentageincineration = <%- ((resultat.incineration * 100) / resultat.total).toFixed(1) %>;
+        
+        
+        var administrateurs = <%- users.administrateurs %>;
+        var stagiaires = <%- users.stagiaires %>;
+        var PourcentageAdmin = <%- ((users.administrateurs * 100) / users.total).toFixed(1) %>;
+        var PourcentageStagi = <%- ((users.stagiaires * 100) / users.total).toFixed(1) %>;
+        
+        // Création des 3 graphiques
+        createChart('myChart1', [PourcentageAdmin, PourcentageStagi]);
+        createChart2('myChart2', [22, 22, 56]);
+        createChart3('myChart3', [Pourcentageinhumation, Pourcentageincineration]);
+    </script>
+
+    <!-- Stats pour les inhumation par mois et par années -->
+    <script>
+        const dataFromDB = <%- JSON.stringify(data) %>;
+
+        // Obtenir toutes les années distinctes
+        const annees = [...new Set(dataFromDB.map(entry => entry.annee))];
+        const moisLabels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+        // Créer des datasets pour chaque année
+        const datasets = annees.map(annee => {
+            const dataParMois = new Array(12).fill(0);
+
+            dataFromDB.filter(entry => entry.annee === annee).forEach(entry => {
+                dataParMois[entry.mois - 1] = entry.nombre_inhumations;
+            });
+
+            return {
+                label: `Inhumations ${annee}`,
+                data: dataParMois,
+                backgroundColor: `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.5)`
+            };
+        });
+
+        // Création du graphique
+        const ctx = document.getElementById('inhumationsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: moisLabels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Stats pour les incineration par mois et par années -->
+    <script>
+        // Récupérer les données passées depuis le serveur
+        const inc = <%- JSON.stringify(dataInc) %>;
+
+        // Obtenir toutes les années distinctes
+        const anneesInc = [...new Set(inc.map(entry => entry.annee))];
+        const moisLabelsInc = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+        // Créer des datasets pour chaque année
+        const datasetsInc = anneesInc.map(annee => {
+            const dataParMois = new Array(12).fill(0);
+
+            inc.filter(entry => entry.annee === annee).forEach(entry => {
+                dataParMois[entry.mois - 1] = entry.nombre_incinerations; // Correction ici
+            });
+
+            return {
+                label: `Incinérations ${annee}`,
+                data: dataParMois,
+                backgroundColor: `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.5)`
+            };
+        });
+
+        // Création du graphique
+        const ctxInc = document.getElementById('incinerationsChart').getContext('2d');
+        new Chart(ctxInc, { // Correction ici
+            type: 'bar',
+            data: {
+                labels: moisLabelsInc,
+                datasets: datasetsInc
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
         
 <%-include("./composants/footer") %>

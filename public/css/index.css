@@ -80,6 +80,8 @@ td {
   border-bottom: 1px solid #ddd;
 }
 
+
+/* Messages */
 .form-messages {
   display: flex;
   align-items: center;
@@ -107,4 +109,15 @@ td {
 
 .form-messages button:hover {
   background-color: #0056b3;
+}
+
+/* Stats */
+.chart-container {
+  width: 300px;
+  margin: auto;
+}
+
+.chart {
+  width: 90%;
+  margin: auto;
 }

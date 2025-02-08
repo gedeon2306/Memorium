@@ -1,7 +1,7 @@
 const { request, response } = require('express')
 const uuid = require('uuid')
 const { addToHistory } = require('../config/historique')
-const moment = require('moment')
+const moment = require('../lib/moment')
 
 exports.index = (request, response)=>{
 
@@ -55,16 +55,24 @@ exports.index = (request, response)=>{
                                     return response.status(500).render('layout/500', { error })
                                 }
 
-                                addToHistory(request, 'A acceder à l\'accueil')
-                    
-                                response.status(200).render('layout/index', {
-                                    actif,
-                                    trous: resultat[0].trous, 
-                                    users: users[0].users, 
-                                    femmes : genreF[0].femmes, 
-                                    hommes : genreM[0].hommes, 
-                                    adultes : adultes[0].adultes, 
-                                    mineurs : mineurs[0].mineurs
+                                connection.query("SELECT nom, prenom, dateEnregistrement FROM defunts ORDER BY dateEnregistrement DESC LIMIT 7", [], (error, dernierEnregistrement) => {
+                                    if (error) {
+                                        return response.status(500).render('layout/500', { error })
+                                    }
+    
+                                    addToHistory(request, 'A acceder à l\'accueil')
+                        
+                                    response.status(200).render('layout/index', {
+                                        actif,
+                                        trous: resultat[0].trous, 
+                                        users: users[0].users, 
+                                        femmes : genreF[0].femmes, 
+                                        hommes : genreM[0].hommes, 
+                                        adultes : adultes[0].adultes, 
+                                        mineurs : mineurs[0].mineurs,
+                                        dernierEnregistrement,
+                                        moment
+                                    })
                                 })
                             })
                         })
@@ -92,9 +100,67 @@ exports.stats = (request, response)=>{
         'photoUser' : request.session.photo
     }
 
-    addToHistory(request, 'A acceder à statistique')
+    const query = `
+        SELECT COUNT(*) AS total, 
+            SUM(CASE WHEN statut = 'incineré' THEN 1 ELSE 0 END) AS incineration, 
+            SUM(CASE WHEN statut <> 'incineré' THEN 1 ELSE 0 END) AS inhumation 
+        FROM defunts;`
+    request.getConnection((error, connection) => {
+        if (error) {
+            return response.status(500).render('layout/500', { error })
+        }
+        connection.query(query, [], (error, resultat) => {
+            if (error) {
+                return response.status(500).render('layout/500', { error })
+            }
+            
+            const queryUsers = `
+                SELECT COUNT(*) AS total, 
+                    SUM(CASE WHEN role = 'administrateur' THEN 1 ELSE 0 END) AS administrateurs, 
+                    SUM(CASE WHEN role = 'stagiaire' THEN 1 ELSE 0 END) AS stagiaires 
+                FROM users; `
+            connection.query(queryUsers, [], (error, users) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+                
+                const sql = `
+                    SELECT 
+                        YEAR(dateInhumation) AS annee,
+                        MONTH(dateInhumation) AS mois,
+                        COUNT(*) AS nombre_inhumations
+                    FROM defunts
+                    GROUP BY annee, mois
+                    ORDER BY annee DESC, mois ASC;
+                `
+                connection.query(sql, [], (error, data) => {
+                    if (error) {
+                        return response.status(500).render('layout/500', { error })
+                    }
+                    
+                    const sqlInc = `
+                        SELECT 
+                        YEAR(dateIncineration) AS annee,
+                        MONTH(dateIncineration) AS mois,
+                        COUNT(*) AS nombre_incinerations
+                    FROM defunts
+                    GROUP BY annee, mois
+                    ORDER BY annee DESC, mois ASC;
 
-    response.status(200).render('layout/stats', {actif})
+                    `
+                    connection.query(sqlInc, [], (error, dataInc) => {
+                        if (error) {
+                            return response.status(500).render('layout/500', { error })
+                        }
+                        
+                        addToHistory(request, 'A acceder à statistique')
+            
+                        response.status(200).render('layout/stats', {actif, resultat : resultat[0], users : users[0], data, dataInc})
+                    })
+                })
+            })
+        })
+    })
 }
 
 exports.carte = (request, response)=>{
@@ -118,7 +184,7 @@ exports.carte = (request, response)=>{
             return response.status(500).render('layout/500', { error })
         }
 
-        connection.query("SELECT place FROM defunts WHERE place IS NOT NULL", [], (error, resultat) => {
+        connection.query("SELECT id, place FROM defunts WHERE place IS NOT NULL", [], (error, resultat) => {
             if (error) {
                 return response.status(500).render('layout/500', { error })
             }

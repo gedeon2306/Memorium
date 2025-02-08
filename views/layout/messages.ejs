@@ -19,9 +19,9 @@
                         </div>
                         <div class="w3-col m10 w3-container">
                             <% if (message.role === 'Administrateur') { %>
-                                <h4><strong style="color: red;">Administrateur (<%=message.nomComplet %>)</strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
+                                <h4><strong style="color: red;">Administrateur (<%=message.nomComplet %>)</strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).format('D MMM YYYY HH:mm') %></span></h4>
                             <% }else{ %>
-                                <h4><strong><%=message.nomComplet %></strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).locale('fr').format('D MMM YYYY HH:mm') %></span></h4>
+                                <h4><strong><%=message.nomComplet %></strong> <span class="w3-opacity w3-medium"><%= moment(message.dateTime).format('D MMM YYYY HH:mm') %></span></h4>
                             <% } %>
                                 
                             <p><%=message.message %></p><br>

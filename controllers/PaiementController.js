@@ -352,7 +352,7 @@ exports.print = (request, response) => {
                     return response.status(400).redirect('/paiement.index');
                 }
 
-                addToHistory(request, 'A imprimé une facture')
+                addToHistory(request, 'A imprimé la facture ' + facture[0].numFacture)
 
                 const row = facture[0];
                 const doc = new PDFDocument({ margin: 50 });

@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const moment = require('moment');
+const moment  = require('../lib/moment')
 const { addToHistory } = require('../config/historique')
 
 exports.index = (request, response) => {

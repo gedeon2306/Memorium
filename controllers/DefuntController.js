@@ -325,7 +325,7 @@ exports.incinerer = (request, response) =>{
                 }
             }
 
-            connection.query('UPDATE defunts SET statut = ? WHERE id = ?', ['Incineré',id], (error)=>{
+            connection.query('UPDATE defunts SET place = ?, statut = ? WHERE id = ?', [null,'Incineré',id], (error)=>{
                 if (error) {
                     return response.status(500).render('layout/500', { error })
                 }

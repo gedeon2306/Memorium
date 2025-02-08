@@ -4,15 +4,15 @@
             <% let isRed = false; %>
             <% resultat.forEach(element => { %>
                 <% if (element.place === i) { %>
-                    <% isRed = true; %>
+                    <% isRed = true; id = element.id %>
                 <% } %>
             <% }); %>
 
             <% if (isRed) { %>
-                <div class="cartTrou" style="background-color: #ff0000;"><a href="#"><%= i %></a></div>
+                <div class="cartTrou" style="background-color: #ff0000;"><a href="/defunt.show/<%=id %>"><%= i %></a></div>
             <% } else { %>
-                <div class="cartTrou"><a href="#"><%= i %></a></div>
+                <div class="cartTrou"><a><%= i %></a></div>
             <% } %>
         <% } %>
-    </section>       
+    </section>        
 <%-include("./composants/footer") %>
