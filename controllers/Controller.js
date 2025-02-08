@@ -235,8 +235,52 @@ exports.notes = (request, response)=>{
             if (error) {
                 return response.status(500).render('layout/500', { error })
             }
-            addToHistory(request, 'A acceder aux notes')
-            response.status(200).render('layout/notes', {actif, resultat})
+
+            const query = `
+                    SELECT d.dateIncineration, d.nom, d.prenom, f.nomFamille 
+                    FROM defunts d, familles f
+                    WHERE d.famille_id = f.id
+                    AND statut = 'inhumé'
+                `
+            connection.query(query, (error, results) => {
+                if (error) {
+                    return response.status(500).render('layout/500', { error })
+                }
+
+                const today = new Date();
+                const evenements = [];
+    
+                results.forEach(row => {
+                    const targetDate = new Date(row.dateIncineration);
+                    const diffTime = targetDate - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+                    if (diffDays <= 30) {
+                        evenements.push({
+                            date: row.dateIncineration,
+                            nom: row.nom,
+                            prenom: row.prenom,
+                            famille: row.nomFamille,
+                        });
+                    }
+                });
+                
+                connection.query(`SELECT d.dateIncineration, d.nom, d.prenom, f.nomFamille FROM defunts d, familles f WHERE d.famille_id = f.id AND statut = 'incineration prevue'`, (error, evenementInc) => {
+                    if (error) {
+                        return response.status(500).render('layout/500', { error })
+                    }
+
+                    connection.query(`SELECT COUNT(id) AS 'trous' FROM defunts WHERE place IS NOT NULL`, (error, resultatTrous) => {
+                        if (error) {
+                            return response.status(500).render('layout/500', { error })
+                        }
+    
+                        addToHistory(request, 'A acceder aux notes')
+                        response.status(200).render('layout/notes', {actif, resultat, evenements, moment, evenementInc, resultatTrous : resultatTrous[0]})
+                    })
+
+                })
+            });
         })
     })
 }

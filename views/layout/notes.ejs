@@ -28,22 +28,42 @@
 }
 </style>
 
-    <section style="margin: 16px;">
-        <h2>Notes</h2>
+  <section style="padding: 16px;">
+    <h2 style="padding-left: 19px;"><b><i class="fa fa-bell"></i> Notes</b></h2>
+
+    <% if (resultatTrous) { %>
+      <% if (((resultatTrous * 100) / 250).toFixed(1) >= 90) { %>
         <div class="danger notes">
-            <p><strong>Danger!</strong> Some text...</p>
+          <p><strong><i class="fa-solid fa-triangle-exclamation"></i> Attention!</strong> Disponibilité critique des places; <%=((resultatTrous * 100) / 250).toFixed(1)%>% des places restantes</p>
         </div>
+      <% } %>
+    <% } %>
 
-        <div class="success notes">
-            <p><strong>Success!</strong> Some text...</p>
-        </div>
-
-        <div class="info notes">
-            <p><strong>Info!</strong> Some text...</p>
-        </div>
-
+    <% if (evenements.length > 0) { %>
+      <% evenements.forEach(event => { %>
         <div class="warning notes">
-            <p><strong>Warning!</strong> Some text...</p>
+          <p><strong><i class="fa-solid fa-triangle-exclamation"></i> Attention</strong> Nous sommes à un mois de l'incinération</p>
+          <p>Pensez à contacter la famille: <strong><%= event.famille %></strong> pour le défunt <strong><%= event.prenom %> <%= event.nom %></strong> - <%=moment(event.date).format('DD/MM/YYYY') %></p>
         </div>
-    </section>
+      <% }) %>
+    <% } else { %>
+      <div class="info notes">
+        <p><strong><i class="fa-solid fa-circle-info"></i> Info!</strong> Aucune incinération prévue dans un mois.</p>
+      </div>
+    <% } %>
+
+    <% if (evenementInc.length > 0) { %>
+      <% evenementInc.forEach(eventInc => { %>
+        <div class="warning notes">
+          <p><strong><i class="fa-solid fa-triangle-exclamation"></i> Attention</strong> Incinération prevue</p>
+          <p>La famille: <strong><%= eventInc.famille %></strong> doit incinerer le défunt <strong><%= eventInc.prenom %> <%= eventInc.nom %></strong> - <%=moment(eventInc.date).format('DD/MM/YYYY') %></p>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="info notes">
+        <p><strong><i class="fa-solid fa-circle-info"></i> Info!</strong> Aucune incinération confirmie.</p>
+      </div>
+    <% } %>
+  </section>
+
 <%- include('./composants/footer') %>

@@ -1,5 +1,27 @@
 <%-include("./composants/header") %>
 
+    <% if (trous) { %>
+        <% if (((trous * 100) / 250).toFixed(1) >= 90) { %>
+            <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: "Disponibilité critique des places; <%=((trous * 100) / 250).toFixed(1)%>% des places restantes"
+                });
+            </script>
+        <% } %>
+    <% } %>
+
     <section style="padding: 16px;">
         <h2 style="padding-left: 19px;"><b><i class="fa fa-home"></i> Accueil</b></h2>
         <div class="w3-row-padding w3-margin-bottom">
