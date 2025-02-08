@@ -1,13 +1,13 @@
 <%-include("./composants/header") %>
     <div class="cards-section">
         <div class="chart-container">
-            <canvas id="myChart1"></canvas>
+            <canvas id="utilisateursChart"></canvas>
         </div>
         <div class="chart-container">
-            <canvas id="myChart2"></canvas>
+            <canvas id="trousChart"></canvas>
         </div>
         <div class="chart-container">
-            <canvas id="myChart3"></canvas>
+            <canvas id="statusChart"></canvas>
         </div>
     </div>
     <div>
@@ -25,16 +25,16 @@
     <script>
         Chart.register(ChartDataLabels);
 
-        function createChart(canvasId, data) {
+        function utilisateur(canvasId, data) {
             const total = data.reduce((acc, val) => acc + val, 0);
             const ctx = document.getElementById(canvasId).getContext('2d');
             new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Administrateurs '+ administrateurs, 'Stagiaires '+ stagiaires],
+                    labels: ['Administrateurs '+ administrateurs, 'Stagiaires '+ stagiaires, 'Assistant '+ assistant],
                     datasets: [{
                         data: data,
-                        backgroundColor: ['blue', 'red']
+                        backgroundColor: ['blue', 'red', 'green']
                     }]
                 },
                 options: {
@@ -53,16 +53,16 @@
             });
         }
 
-        function createChart2(canvasId, data) {
+        function trou(canvasId, data) {
             const total = data.reduce((acc, val) => acc + val, 0);
             const ctx = document.getElementById(canvasId).getContext('2d');
             new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Administrateurs', 'Stagiaires', 'Assistants'],
+                    labels: ['Occupés '+nbOccupe, 'Disponibles '+nbDisponible],
                     datasets: [{
                         data: data,
-                        backgroundColor: ['purple', 'green', 'brown']
+                        backgroundColor: ['purple', 'brown']
                     }]
                 },
                 options: {
@@ -81,7 +81,7 @@
             });
         }
 
-        function createChart3(canvasId, data) {
+        function statu(canvasId, data) {
             const total = data.reduce((acc, val) => acc + val, 0);
             const ctx = document.getElementById(canvasId).getContext('2d');
             new Chart(ctx, {
@@ -109,22 +109,20 @@
             });
         }
         
+        var administrateurs = <%- users.administrateurs %>;
+        var stagiaires = <%- users.stagiaires %>;
+        var assistant = <%- users.assistants %>;
+        
+        var nbOccupe = <%- trouOccupe.trous %>;
+        var nbDisponible = 250 - nbOccupe;
         
         var inhumation = <%- resultat.inhumation %>;
         var incineration = <%- resultat.incineration %>;
-        var Pourcentageinhumation = <%- ((resultat.inhumation * 100) / resultat.total).toFixed(1) %>;
-        var Pourcentageincineration = <%- ((resultat.incineration * 100) / resultat.total).toFixed(1) %>;
-        
-        
-        var administrateurs = <%- users.administrateurs %>;
-        var stagiaires = <%- users.stagiaires %>;
-        var PourcentageAdmin = <%- ((users.administrateurs * 100) / users.total).toFixed(1) %>;
-        var PourcentageStagi = <%- ((users.stagiaires * 100) / users.total).toFixed(1) %>;
         
         // Création des 3 graphiques
-        createChart('myChart1', [PourcentageAdmin, PourcentageStagi]);
-        createChart2('myChart2', [22, 22, 56]);
-        createChart3('myChart3', [Pourcentageinhumation, Pourcentageincineration]);
+        utilisateur('utilisateursChart', [administrateurs, stagiaires, assistant]);
+        trou('trousChart', [nbOccupe, nbDisponible]);
+        statu('statusChart', [inhumation, incineration]);
     </script>
 
     <!-- Stats pour les inhumation par mois et par années -->

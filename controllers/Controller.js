@@ -117,7 +117,8 @@ exports.stats = (request, response)=>{
             const queryUsers = `
                 SELECT COUNT(*) AS total, 
                     SUM(CASE WHEN role = 'administrateur' THEN 1 ELSE 0 END) AS administrateurs, 
-                    SUM(CASE WHEN role = 'stagiaire' THEN 1 ELSE 0 END) AS stagiaires 
+                    SUM(CASE WHEN role = 'stagiaire' THEN 1 ELSE 0 END) AS stagiaires,
+                    SUM(CASE WHEN role = 'assistant' THEN 1 ELSE 0 END) AS assistants
                 FROM users; `
             connection.query(queryUsers, [], (error, users) => {
                 if (error) {
@@ -153,9 +154,24 @@ exports.stats = (request, response)=>{
                             return response.status(500).render('layout/500', { error })
                         }
                         
-                        addToHistory(request, 'A acceder à statistique')
-            
-                        response.status(200).render('layout/stats', {actif, resultat : resultat[0], users : users[0], data, dataInc})
+                        const sqlTrou = `SELECT COUNT(id) AS 'trous' FROM defunts WHERE place IS NOT NULL`
+                        connection.query(sqlTrou, [], (error, trouOccupe) => {
+                            if (error) {
+                                return response.status(500).render('layout/500', { error })
+                            }
+                            
+                            addToHistory(request, 'A acceder à statistique')
+                
+                            response.status(200).render('layout/stats', 
+                                {actif, 
+                                    resultat : resultat[0], 
+                                    users : users[0], 
+                                    data, 
+                                    dataInc,
+                                    trouOccupe : trouOccupe[0]
+                                }
+                            )
+                        })
                     })
                 })
             })
